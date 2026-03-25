@@ -1,0 +1,71 @@
+<div class="admin-container">
+
+    <h2>User Management</h2>
+
+    <div class="filter">
+        <input type="text" placeholder="Search email..." [(ngModel)]="email">
+
+        <select [(ngModel)]="status">
+            <option [ngValue]="null">All Status</option>
+            <option [ngValue]="1">Active</option>
+            <option [ngValue]="0">Inactive</option>
+            <option [ngValue]="-1">Banned</option>
+        </select>
+
+        <select [(ngModel)]="roleId">
+            <option [ngValue]="null">All Role</option>
+            <option [ngValue]="1">Admin</option>
+            <option [ngValue]="2">User</option>
+            <option [ngValue]="3">Moderator</option>
+        </select>
+
+        <button (click)="search()">Search</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Role</th>
+                <th>Save</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let u of users; let i = index">
+                <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+                <td>{{u.name}}</td>
+                <td>{{u.email}}</td>
+
+                <td>
+                    <select [(ngModel)]="u.status">
+                        <option [ngValue]="1">Active</option>
+                        <option [ngValue]="0">Inactive</option>
+                    </select>
+                </td>
+
+                <td>
+                    <select [(ngModel)]="u.roleId">
+                        <option [ngValue]="1">Admin</option>
+                        <option [ngValue]="2">User</option>
+                        <option [ngValue]="3">Moderator</option>
+                    </select>
+                </td>
+
+                <td>
+                    <button (click)="saveUser(u)">Save</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <button (click)="prevPage()">Prev</button>
+        <span>Page {{page}} / {{totalPage}}</span>
+        <button (click)="nextPage()">Next</button>
+    </div>
+
+</div>

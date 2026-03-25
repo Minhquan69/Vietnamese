@@ -1,0 +1,46 @@
+<div class="login-bg">
+
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+    <div class="circle c3"></div>
+
+    <div class="login-card">
+
+        <h2>My Profile</h2>
+        <p class="subtitle">
+            Manage your account information
+        </p>
+
+        <!-- VIEW INFO -->
+        <div class="profile-info">
+            <p><b>Name:</b> {{name}}</p>
+            <p><b>Email:</b> {{email}}</p>
+            <p><b>Role:</b> {{role}}</p>
+        </div>
+
+        <hr>
+
+        <!-- UPDATE PROFILE -->
+        <h3>Update Information</h3>
+
+        <input type="text" placeholder="New Name" [(ngModel)]="newName" />
+        <input type="text" placeholder="New Email" [(ngModel)]="newEmail" />
+
+        <button (click)="updateProfile()">
+            Update Profile
+        </button>
+
+        <hr>
+
+        <!-- CHANGE PASSWORD -->
+        <h3>Change Password</h3>
+
+        <input type="password" placeholder="Old Password" [(ngModel)]="oldPassword" />
+        <input type="password" placeholder="New Password" [(ngModel)]="newPassword" />
+
+        <button (click)="changePassword()">
+            Change Password
+        </button>
+
+    </div>
+</div>

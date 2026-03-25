@@ -1,0 +1,453 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Phuong\\DoAn\\Backend\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\services\\impl\\videoserviceimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\services\\impl\\videoserviceimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\services\\impl\\userserviceimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\services\\impl\\userserviceimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\controllers\\videocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\controllers\\videocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\repository\\impl\\userrepositoryimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\repository\\impl\\userrepositoryimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\common\\usercontextutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\common\\usercontextutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\dto\\changepassworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\dto\\changepassworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\services\\jwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\services\\jwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\dto\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\dto\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\repository\\impl\\videorepositoryimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\repository\\impl\\videorepositoryimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\models\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\common\\constant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\common\\constant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\dto\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\dto\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\dto\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\dto\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\dto\\transcriptdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\dto\\transcriptdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\dto\\videodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\dto\\videodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\repository\\videorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\repository\\videorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\services\\videoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\services\\videoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\models\\video.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\video.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\backend.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\backend.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|e:\\phuong\\doan\\backend\\backend\\models\\transcript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{725778AF-BC14-498F-9301-6AB7D632C85D}|Backend\\Backend.csproj|solutionrelative:backend\\models\\transcript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "Backend\\Controllers\\AccountController.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "Backend\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T05:15:34.488Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserServiceImpl.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Services\\impl\\UserServiceImpl.cs",
+              "RelativeDocumentMoniker": "Backend\\Services\\impl\\UserServiceImpl.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Services\\impl\\UserServiceImpl.cs",
+              "RelativeToolTip": "Backend\\Services\\impl\\UserServiceImpl.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAALUAAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T15:17:06.636Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "VideoController.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Controllers\\VideoController.cs",
+              "RelativeDocumentMoniker": "Backend\\Controllers\\VideoController.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Controllers\\VideoController.cs",
+              "RelativeToolTip": "Backend\\Controllers\\VideoController.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAQwDcAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T04:54:46.398Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UserRepositoryImpl.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Repository\\impl\\UserRepositoryImpl.cs",
+              "RelativeDocumentMoniker": "Backend\\Repository\\impl\\UserRepositoryImpl.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Repository\\impl\\UserRepositoryImpl.cs",
+              "RelativeToolTip": "Backend\\Repository\\impl\\UserRepositoryImpl.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAQwEkAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T15:11:59.228Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "VideoServiceImpl.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Services\\impl\\VideoServiceImpl.cs",
+              "RelativeDocumentMoniker": "Backend\\Services\\impl\\VideoServiceImpl.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Services\\impl\\VideoServiceImpl.cs",
+              "RelativeToolTip": "Backend\\Services\\impl\\VideoServiceImpl.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAQwCgAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T05:11:05.613Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ChangePasswordDTO.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\dto\\ChangePasswordDTO.cs",
+              "RelativeDocumentMoniker": "Backend\\dto\\ChangePasswordDTO.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\dto\\ChangePasswordDTO.cs",
+              "RelativeToolTip": "Backend\\dto\\ChangePasswordDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-20T03:04:13.725Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UserContextUtil.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\common\\UserContextUtil.cs",
+              "RelativeDocumentMoniker": "Backend\\common\\UserContextUtil.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\common\\UserContextUtil.cs",
+              "RelativeToolTip": "Backend\\common\\UserContextUtil.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAwwCEAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T15:28:46.196Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "JwtService.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Services\\JwtService.cs",
+              "RelativeDocumentMoniker": "Backend\\Services\\JwtService.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Services\\JwtService.cs",
+              "RelativeToolTip": "Backend\\Services\\JwtService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T16:00:05.308Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "UserDTO.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\dto\\UserDTO.cs",
+              "RelativeDocumentMoniker": "Backend\\dto\\UserDTO.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\dto\\UserDTO.cs",
+              "RelativeToolTip": "Backend\\dto\\UserDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T14:33:05.738Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "VideoRepositoryImpl.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Repository\\impl\\VideoRepositoryImpl.cs",
+              "RelativeDocumentMoniker": "Backend\\Repository\\impl\\VideoRepositoryImpl.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Repository\\impl\\VideoRepositoryImpl.cs",
+              "RelativeToolTip": "Backend\\Repository\\impl\\VideoRepositoryImpl.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAAwBoAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T05:08:33.569Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Services\\UserService.cs",
+              "RelativeDocumentMoniker": "Backend\\Services\\UserService.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Services\\UserService.cs",
+              "RelativeToolTip": "Backend\\Services\\UserService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T15:14:23.057Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Repository\\UserRepository.cs",
+              "RelativeDocumentMoniker": "Backend\\Repository\\UserRepository.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Repository\\UserRepository.cs",
+              "RelativeToolTip": "Backend\\Repository\\UserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T15:11:30.511Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "User.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\User.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Models\\User.cs",
+              "RelativeToolTip": "Backend\\Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T15:00:00.877Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Role.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Models\\Role.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\Role.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Models\\Role.cs",
+              "RelativeToolTip": "Backend\\Models\\Role.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T15:01:52.49Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Constant.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\common\\Constant.cs",
+              "RelativeDocumentMoniker": "Backend\\common\\Constant.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\common\\Constant.cs",
+              "RelativeToolTip": "Backend\\common\\Constant.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T16:12:51.041Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "LoginDTO.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\dto\\LoginDTO.cs",
+              "RelativeDocumentMoniker": "Backend\\dto\\LoginDTO.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\dto\\LoginDTO.cs",
+              "RelativeToolTip": "Backend\\dto\\LoginDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-20T03:03:16.306Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "RegisterDTO.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\dto\\RegisterDTO.cs",
+              "RelativeDocumentMoniker": "Backend\\dto\\RegisterDTO.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\dto\\RegisterDTO.cs",
+              "RelativeToolTip": "Backend\\dto\\RegisterDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-20T03:03:46.236Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "TranscriptDTO.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\dto\\TranscriptDTO.cs",
+              "RelativeDocumentMoniker": "Backend\\dto\\TranscriptDTO.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\dto\\TranscriptDTO.cs",
+              "RelativeToolTip": "Backend\\dto\\TranscriptDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-07T15:38:16.533Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "VideoDTO.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\dto\\VideoDTO.cs",
+              "RelativeDocumentMoniker": "Backend\\dto\\VideoDTO.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\dto\\VideoDTO.cs",
+              "RelativeToolTip": "Backend\\dto\\VideoDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T05:05:52.423Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Backend\\Data\\AppDbContext.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "Backend\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T15:03:55.973Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "VideoRepository.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Repository\\VideoRepository.cs",
+              "RelativeDocumentMoniker": "Backend\\Repository\\VideoRepository.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Repository\\VideoRepository.cs",
+              "RelativeToolTip": "Backend\\Repository\\VideoRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T05:06:32.471Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "VideoService.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Services\\VideoService.cs",
+              "RelativeDocumentMoniker": "Backend\\Services\\VideoService.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Services\\VideoService.cs",
+              "RelativeToolTip": "Backend\\Services\\VideoService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T04:50:17.201Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "Video.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Models\\Video.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\Video.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Models\\Video.cs",
+              "RelativeToolTip": "Backend\\Models\\Video.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-09T03:59:22.64Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Program.cs",
+              "RelativeDocumentMoniker": "Backend\\Program.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Program.cs",
+              "RelativeToolTip": "Backend\\Program.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAAwEQAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T15:30:23.259Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Backend.csproj",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Backend.csproj",
+              "RelativeDocumentMoniker": "Backend\\Backend.csproj",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Backend.csproj",
+              "RelativeToolTip": "Backend\\Backend.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-03-14T15:27:42.672Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "Transcript.cs",
+              "DocumentMoniker": "E:\\Phuong\\DoAn\\Backend\\Backend\\Models\\Transcript.cs",
+              "RelativeDocumentMoniker": "Backend\\Models\\Transcript.cs",
+              "ToolTip": "E:\\Phuong\\DoAn\\Backend\\Backend\\Models\\Transcript.cs",
+              "RelativeToolTip": "Backend\\Models\\Transcript.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-07T15:38:19.254Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+<div class="container">
+
+    <h2 class="title">Video Management</h2>
+
+    <div class="video-player" *ngIf="currentVideoUrl" id="videoPlayer">
+        <iframe [src]="currentVideoUrl" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div class="video-detail" *ngIf="selectedVideo">
+        <h3>{{selectedVideo.title}}</h3>
+        <p><b>Youtube ID:</b> {{selectedVideo.youtubeId}}</p>
+        <p><b>Status:</b>
+            <span *ngIf="selectedVideo.status == 0">Pending</span>
+            <span *ngIf="selectedVideo.status == 1">Approved</span>
+            <span *ngIf="selectedVideo.status == 2">Temporarily Locked</span>
+        </p>
+    </div>
+
+    <div class="box">
+        <input [(ngModel)]="youtubeId" placeholder="Enter Youtube ID to import">
+        <button (click)="importVideo()">Import</button>
+    </div>
+
+    <div class="box">
+        <input [(ngModel)]="searchYoutubeId" placeholder="Search by Youtube ID">
+        <button (click)="searchVideoById()">Search Video</button>
+        <button (click)="loadVideos(true)">Back</button>
+    </div>
+
+    <div class="filter">
+        <select [(ngModel)]="status" (change)="loadVideos(true)">
+            <option [ngValue]="null">All</option>
+            <option [ngValue]="0">Pending</option>
+            <option [ngValue]="1">Approved</option>
+            <option [ngValue]="2">Temporarily Locked</option>
+        </select>
+    </div>
+
+    <div class="video-list">
+        <div class="video-item" *ngFor="let v of videos" (click)="selectVideo(v)">
+
+            <img [src]="v.thumbnail ? v.thumbnail : 'https://img.youtube.com/vi/' + v.youtubeId + '/0.jpg'">
+
+            <div class="video-info">
+                <div class="video-title">{{v.title}}</div>
+
+                <div class="video-id">ID: {{v.id}}</div>
+
+                <select [ngModel]="v.status" (click)="$event.stopPropagation()" (ngModelChange)="updateStatus(v.videoId, $event)">
+                    <option [ngValue]="0">Pending</option>
+                    <option [ngValue]="1">Approved</option>
+                    <option [ngValue]="2">Temporarily Locked</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="pagination">
+        <button (click)="prevPage()">Prev</button>
+        <span>Page {{page}}</span>
+        <button (click)="nextPage()">Next</button>
+    </div>
+
+</div>

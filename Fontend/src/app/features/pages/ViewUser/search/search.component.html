@@ -1,0 +1,53 @@
+<div class="main-container">
+    <div class="content-center">
+
+        <div class="search-wrapper">
+            <div class="search-row">
+                <input type="text" [(ngModel)]="keyword" (keyup.enter)="onSearchClick()"
+                    placeholder="Enter Vietnamese word..." />
+                <button (click)="onSearchClick()">Search</button>
+            </div>
+        </div>
+
+        <div *ngIf="hasSearched" class="title">
+            Bạn nói <span class="highlight">"{{ searchkeyword }}"</span> trong tiếng Việt như thế nào?
+        </div>
+
+        <div *ngIf="!hasSearched" class="intro-section">
+            <p class="intro-text">
+                Speak Vietnamese with confidence with VietPhuong.
+                Learn how native speakers pronounce difficult sounds through real video clips.
+                Experience Vietnamese as it’s truly spoken — not just dictionary audio.
+            </p>
+
+            <div class="examples">
+                Examples:
+                <span class="example-word">xin chào</span>,
+                <span class="example-word">gia đình</span>,
+                <span class="example-word">ngôi nhà</span>
+            </div>
+        </div>
+
+        <div *ngIf="noResult" class="no-result">
+            No videos found for "<span class="highlight">{{keyword}}</span>"
+        </div>
+
+        <div class="video-container" *ngIf="videoId">
+            <div id="ytplayer"></div>
+        </div>
+
+        <div class="video-controls" *ngIf="videoId">
+            <button (click)="previousVideo()">⏮</button>
+            <button (click)="back5()">⏪</button>
+            <button (click)="replay()">🔁</button>
+            <button (click)="pause()">{{ isPlaying ? '⏸' : '▶' }}</button>
+            <button (click)="forward5()">⏩</button>
+            <button (click)="nextVideo()">⏭</button>
+        </div>
+
+        <div class="subtitle-box" *ngIf="highlightedSubtitle">
+            <p [innerHTML]="highlightedSubtitle"></p>
+        </div>
+
+    </div>
+</div>

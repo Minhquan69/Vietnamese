@@ -1,0 +1,66 @@
+<main class="main-home">
+
+    <section class="hero">
+
+        <h1>{{heroTitle}}</h1>
+
+        <p>{{heroDescription}}</p>
+
+        <button (click)="startLearning()">
+            Start Learning
+        </button>
+
+    </section>
+
+    <section class="about">
+
+        <h2>About VietPhuong</h2>
+
+        <p>
+            VietPhuong is an online platform designed to help foreigners
+            learn Vietnamese easily through vocabulary practice,
+            pronunciation exercises and real-life conversations.
+        </p>
+
+    </section>
+
+    <section class="features">
+
+        <div class="feature-card" *ngFor="let f of features">
+
+            <h3>{{f.title}}</h3>
+
+            <p>{{f.description}}</p>
+
+        </div>
+
+    </section>
+
+    <section class="courses">
+
+        <h2>Popular Lessons</h2>
+
+        <div class="course-grid">
+
+            <div class="course-card" *ngFor="let c of courses">
+
+                <h4>{{c.title}}</h4>
+
+                <p>{{c.description}}</p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="cta">
+
+        <h2>Start Learning Vietnamese Today</h2>
+
+        <a routerLink="/register">
+            Create Account
+        </a>
+
+    </section>
+</main>

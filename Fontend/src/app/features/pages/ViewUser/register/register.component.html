@@ -1,0 +1,39 @@
+<div class="login-bg">
+
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+    <div class="circle c3"></div>
+
+    <div class="login-card">
+
+        <h2>Create Account</h2>
+        <p class="subtitle">
+            Join VietPhuong and start learning Vietnamese today
+        </p>
+
+        <input type="text" placeholder="Full Name" [(ngModel)]="name" />
+
+        <input type="text" placeholder="Email" [(ngModel)]="email" />
+
+        <input type="password" placeholder="Password" [(ngModel)]="password" />
+
+        <input type="password" placeholder="Confirm Password" [(ngModel)]="confirmPassword" />
+
+        <div class="login-options">
+            <label>
+                <input type="checkbox" [(ngModel)]="agree"> I agree to terms
+            </label>
+        </div>
+
+        <button (click)="register()">
+            Register
+        </button>
+
+        <div class="create">
+            Already have an account?
+            <a routerLink="/login">Login</a>
+        </div>
+
+    </div>
+
+</div>

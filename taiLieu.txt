@@ -1,0 +1,203 @@
+Chức năng của App Học Tiếng Việt
+1️⃣ Kiểm tra năng lực (Placement Test)
+
+Bài test dạng TOEIC
+
+nhiều câu hỏi
+
+hệ thống chấm điểm tự động
+
+đánh giá trình độ
+
+Ví dụ:
+
+Score: 72/100
+Level: A2
+2️⃣ Học theo lộ trình (Course Learning Path)
+
+Mỗi khóa học gồm:
+
+Khóa học
+   → Video bài học
+   → Bài kiểm tra
+
+Quy tắc:
+
+học xong video
+
+làm bài test
+
+qua → mở bài tiếp theo
+
+Sau khi xong khóa:
+
+Final Test
+→ Qua → sang level tiếp theo
+3️⃣ Bài kiểm tra (Test System)
+
+Các dạng bài:
+
+trắc nghiệm
+
+nghe → chọn đáp án
+
+điền từ
+
+sắp xếp câu
+
+Sau khi nộp bài:
+
+Submit → hệ thống chấm điểm → hiển thị kết quả
+4️⃣ Lớp học online
+
+Chỉ có Admin và Người học
+
+Admin
+
+tạo lớp
+
+tạo lịch học
+
+đặt giá
+
+Người học
+
+xem lịch lớp
+
+đăng ký lớp
+
+thanh toán
+
+Quy định:
+
+đăng ký trước 1 ngày
+vào lớp trước 15 phút
+
+Ví dụ:
+
+Class: Speaking A2
+Date: 12/05
+Time: 19:00
+Join: 18:45
+5️⃣ Tra từ vựng
+
+Người dùng nhập từ:
+
+xin chào
+
+App hiển thị:
+
+ví dụ
+
+video youtube chứa từ đó
+
+6️⃣ Thông báo (Notification)
+
+Các loại thông báo:
+
+📚 nhắc học bài
+
+Bạn chưa học bài hôm nay
+
+⏰ nhắc lớp online
+
+Lớp học bắt đầu sau 30 phút
+7️⃣ Luyện phát âm (Speech Recognition) 🔊
+
+User có thể luyện nói tiếng Việt.
+
+Cách hoạt động:
+
+1️⃣ App phát âm mẫu
+
+Xin chào
+
+2️⃣ User đọc lại
+
+3️⃣ Hệ thống nhận diện giọng nói và chấm điểm phát âm
+
+Ví dụ:
+
+Pronunciation Score: 85/100
+
+8️⃣ Lưu bài học 📝
+
+User có thể:
+
+lưu bài học để học lại
+
+Hoặc:
+
+Save Lesson
+9️⃣ Hồ sơ học tập (Learning Analytics) 📊
+
+Trang Profile
+
+Hiển thị:
+
+Level hiện tại: A2
+Khóa học hoàn thành: 3
+Bài học hoàn thành: 28
+Điểm trung bình: 80
+
+Thống kê thêm:
+
+📈 thời gian học
+
+Tuần này: 3 giờ
+
+🔥 số ngày học liên tiếp
+
+Streak: 5 ngày
+👨‍💻 Admin Panel
+
+Admin quản lý:
+
+Khóa học
+
+tạo khóa học
+
+upload video
+
+tạo bài học
+
+Bài kiểm tra
+
+tạo câu hỏi
+
+tạo đáp án
+
+hệ thống chấm điểm
+
+Lớp học online
+
+tạo lớp
+
+tạo lịch
+
+xem học viên
+
+
+
+
+
+Levels
+Notifications
+LearningStats
+
+Courses
+Lessons
+LessonVideos
+SavedLessons
+
+Tests
+Questions
+Answers
+TestResults
+
+OnlineClasses
+ClassSchedule
+ClassRegistration
+Payments
+
+PronunciationPractice
