@@ -1,17 +1,19 @@
 ﻿using Backend.dto;
+using Backend.Mapper;
 using Backend.Models;
 using Backend.Repository;
+using AutoMapper;
 
 namespace Backend.Services.impl
 {
     public class VideoServiceImpl : VideoService
     {
         private readonly VideoRepository _videoRepository;
-
-        public VideoServiceImpl(VideoRepository videoRepository)
+        private readonly IMapper _mapper;
+        public VideoServiceImpl(VideoRepository videoRepository, IMapper mapper)
         {
             _videoRepository = videoRepository;
-
+            _mapper = mapper;
         }
         /*
          * thêm video mới vào hệ thống
@@ -31,13 +33,7 @@ namespace Backend.Services.impl
         {
             var videos = await _videoRepository.GetAllVideos(status,page,pageSize);
 
-            return videos.Select(v => new VideoDTO
-            {
-                VideoId = v.VideoId,
-                YoutubeId = v.YoutubeId,
-                Title = v.Title,
-                Status = v.Status,
-            }).ToList();
+            return _mapper.Map<List<Video>, List<VideoDTO>>(videos);
         }
         /*
          * tìm kiếm video theo từ khóa
@@ -48,12 +44,7 @@ namespace Backend.Services.impl
         {
             var transcripts = await _videoRepository.Search(keyword,page,pageSize);
 
-            return transcripts.Select(t => new TranscriptDTO
-            {
-                YoutubeId = t.Video?.YoutubeId ?? "",
-                Sentence = t.Sentence ?? "",
-                StartTime = t.StartTime
-            }).ToList();
+            return _mapper.Map<List<Transcript>, List<TranscriptDTO>>(transcripts);
         }
         /*
          * cập nhật trạng thái video
@@ -75,13 +66,7 @@ namespace Backend.Services.impl
 
             if (video == null) return null;
 
-            return new VideoDTO
-            {
-                VideoId = video.VideoId,
-                YoutubeId = video.YoutubeId,
-                Title = video.Title,
-                Status = video.Status
-            };
+            return _mapper.Map<Video, VideoDTO>(video);
         }
     }
 }

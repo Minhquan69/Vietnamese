@@ -1,0 +1,47 @@
+<div class="container">
+
+    <h2>Admin Learning Management</h2>
+
+    <div class="layout">
+
+        <!-- LEVEL -->
+        <div class="box">
+            <h3>Levels</h3>
+
+            <div *ngFor="let l of levels" class="item" (click)="selectLevel(l)">
+                {{l.levelName}}
+            </div>
+
+            <input [(ngModel)]="newLevelName" placeholder="New level name">
+            <button (click)="addLevel()">Add Level</button>
+        </div>
+
+        <!-- COURSE -->
+        <div class="box" *ngIf="selectedLevel">
+            <h3>Courses ({{selectedLevel.levelName}})</h3>
+
+            <div *ngFor="let c of courses" class="item" (click)="selectCourse(c)">
+                {{c.courseName}}
+            </div>
+
+            <input [(ngModel)]="newCourseName" placeholder="New course name">
+            <button (click)="addCourse()">Add Course</button>
+        </div>
+
+        <!-- LESSON -->
+        <div class="box" *ngIf="selectedCourse">
+            <h3>Lessons ({{selectedCourse.courseName}})</h3>
+
+            <div *ngFor="let ls of lessons" class="item">
+                {{ls.lessonName}} (Video: {{ls.videoId}})
+                <button (click)="deleteLesson(ls.lessonId)">Delete</button>
+            </div>
+
+            <input [(ngModel)]="newLessonName" placeholder="Lesson name">
+            <input [(ngModel)]="videoId" placeholder="Video ID">
+            <button (click)="addLesson()">Add Lesson</button>
+        </div>
+
+    </div>
+
+</div>

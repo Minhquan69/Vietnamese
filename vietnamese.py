@@ -28,18 +28,14 @@ def insert_video(video_id, created_by):
     )
 
     cursor = conn.cursor()
-
-    # lấy title
     title = get_youtube_title(video_id)
 
-    # lấy transcript (không crash nếu không có)
     try:
         transcript = YouTubeTranscriptApi().fetch(video_id, languages=['vi'])
     except Exception as e:
         print("Transcript error:", e)
         transcript = []
 
-    # insert video nếu chưa tồn tại
     cursor.execute("""
     IF NOT EXISTS (SELECT 1 FROM Videos WHERE YoutubeId = ?)
     BEGIN
@@ -50,7 +46,6 @@ def insert_video(video_id, created_by):
 
     conn.commit()
 
-    # lấy VideoId
     cursor.execute(
         "SELECT VideoId FROM Videos WHERE YoutubeId = ?",
         (video_id,)
@@ -65,7 +60,6 @@ def insert_video(video_id, created_by):
 
     db_video_id = row[0]
 
-    # xóa transcript cũ
     cursor.execute(
         "DELETE FROM Transcripts WHERE VideoId = ?",
         (db_video_id,)
@@ -73,7 +67,6 @@ def insert_video(video_id, created_by):
 
     conn.commit()
 
-    # chuẩn bị dữ liệu transcript
     data = []
 
     for line in transcript:
@@ -83,7 +76,6 @@ def insert_video(video_id, created_by):
             float(line.start)
         ))
 
-    # insert transcript
     if len(data) > 0:
         cursor.fast_executemany = True
 
@@ -98,7 +90,6 @@ def insert_video(video_id, created_by):
     conn.close()
 
     return title
-
 
 @app.route('/crawl', methods=['POST'])
 def crawl():
@@ -131,7 +122,6 @@ def crawl():
             "status": "error",
             "message": str(e)
         }), 500
-
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)

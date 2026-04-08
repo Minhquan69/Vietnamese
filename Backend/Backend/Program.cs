@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Backend.Common;
+using Backend.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,16 +53,23 @@ builder.Services.AddScoped<JwtService>();
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<UserRepository, UserRepositoryImpl>();
-builder.Services.AddHttpClient<VideoRepositoryImpl>();
-builder.Services.AddScoped<VideoRepository, VideoRepositoryImpl>();
-
 builder.Services.AddScoped<UserService, UserServiceImpl>();
 builder.Services.AddScoped<VideoService, VideoServiceImpl>();
+builder.Services.AddScoped<LearningService, LearningServiceImpl>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserContextUtil>();
+builder.Services.AddScoped<UserRepository, UserRepositoryImpl>();
+builder.Services.AddHttpClient<VideoRepositoryImpl>();
+builder.Services.AddScoped<VideoRepository, VideoRepositoryImpl>();
+builder.Services.AddScoped<LevelRepository, LevelRepositoryImpl>();
+builder.Services.AddScoped<CourseRepository, CourseRepositoryImpl>();
+builder.Services.AddScoped<LessonRepository, LessonRepositoryImpl>();
+builder.Services.AddScoped<ProgressRepository, ProgressRepositoryImpl>();
 
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<QuizRepository, QuizRepositoryImpl>();
 var app = builder.Build();
 
 app.UseCors("AllowAngular");

@@ -1,0 +1,44 @@
+<div class="learning-container">
+
+    <h2 class="title">Learning Path</h2>
+
+    <div class="layout">
+
+        <!-- LEFT: LEARNING PATH -->
+        <div class="sidebar">
+
+            <div *ngFor="let level of learningPath" class="level">
+                <h3>{{level.levelName}}</h3>
+
+                <div *ngFor="let course of level.courses" class="course">
+                    <h4>{{course.courseName}}</h4>
+
+                    <div *ngFor="let lesson of course.lessons" class="lesson" [class.locked]="lesson.isLocked"
+                        [class.completed]="lesson.isCompleted" (click)="selectLesson(lesson)">
+
+                        <span *ngIf="lesson.isCompleted">✔</span>
+                        <span *ngIf="lesson.isLocked">🔒</span>
+                        <span *ngIf="!lesson.isLocked && !lesson.isCompleted">▶</span>
+
+                        {{lesson.lessonName}}
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT: VIDEO -->
+        <div class="video-section" *ngIf="videoUrl">
+
+            <iframe [src]="videoUrl" frameborder="0" allowfullscreen></iframe>
+
+            <button class="complete-btn" (click)="completeLesson()">
+                Complete Lesson
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

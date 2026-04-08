@@ -32,15 +32,15 @@
 
         <ul *ngIf="showAccountMenu">
             <li><button class="menu-btn" routerLink="/login">Login</button></li>
-            <li><button class="menu-btn" routerLink="/register">Register</button></li>
+            <li><button class="menu-btn" routerLink="user/register">Register</button></li>
         </ul>
     </li>
 </ul>
 
     <ul *ngIf="role == 2">
         <li><button class="menu-btn" routerLink="/home">Home</button></li>
-        <li><button class="menu-btn" routerLink="/search">Vocabulary Search</button></li>
-        <li><button class="menu-btn" routerLink="/courses">Courses</button></li>
+        <li><button class="menu-btn" routerLink="user/search">Vocabulary Search</button></li>
+        <li><button class="menu-btn" routerLink="/user/lessons">Courses</button></li>
         <li><button class="menu-btn" routerLink="/practice">Practice Tests</button></li>
         <li><button class="menu-btn" routerLink="/pronunciation">Pronunciation Practice</button></li>
         <li><button class="menu-btn" routerLink="/classes">Online Classes</button></li>
@@ -72,7 +72,7 @@
         <li><button class="menu-btn" routerLink="/dashboard">Dashboard</button></li>
         <li><button class="menu-btn" routerLink="admin/users">Manage Users</button></li>
         <li><button class="menu-btn" routerLink="admin/videos">Manage Videos</button></li>
-        <li><button class="menu-btn" routerLink="/ManageLessons">Manage Lessons</button></li>
+        <li><button class="menu-btn" routerLink="admin/lessons">Manage Lessons</button></li>
         <li><button class="menu-btn" routerLink="/ManageTests">Manage Tests</button></li>
         <li>
         
