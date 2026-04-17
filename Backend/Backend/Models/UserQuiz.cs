@@ -1,4 +1,6 @@
-﻿namespace Backend.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Backend.Models
 {
     public class UserQuiz
     {
@@ -9,6 +11,10 @@
         public DateTime? CompletedDate { get; set; }
         public bool IsPassed { get; set; }
 
-        public Quiz Quiz { get; set; }
+        [ForeignKey("QuizId")] 
+        public virtual Quiz Quiz { get; set; }
+
+        [ForeignKey("UserId")] 
+        public virtual User User { get; set; }
     }
 }

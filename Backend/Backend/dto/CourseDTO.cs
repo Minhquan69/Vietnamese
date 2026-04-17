@@ -8,9 +8,11 @@
         public string Description { get; set; }
         public int OrderIndex { get; set; }
         public bool IsActive { get; set; }
+        public string? CreatedBy { get; set; }
         public bool? Status { get; set; }
         public bool IsDelete { get; set; }
-        public List<LessonDTO> Lessons { get; set; }
+        public List<UnitDTO> Units { get; set; }
+
 
     }
 }

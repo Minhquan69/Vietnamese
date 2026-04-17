@@ -2,6 +2,7 @@
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Backend.Repository.impl
 {
     public class QuizRepositoryImpl : QuizRepository
@@ -15,17 +16,17 @@ namespace Backend.Repository.impl
 
         // UserQuiz
         /*
-         * Lấy quiz theo lessonId
+         * Lấy quiz theo UnitId
          * 
          * thuphuong21072004
          */
-        public async Task<Quiz> GetQuizByLesson(int lessonId)
+        public async Task<Quiz> GetQuizByUnit(int UnitId)
         {
             return await _context.Quizzes
-    .FirstOrDefaultAsync(q => q.LessonId == lessonId);
+    .FirstOrDefaultAsync(q => q.UnitId == UnitId);
         }
         /*
-         * 
+         * lấy đáp án đúng của câu hỏi
          * 
          * thuphuong21072004
          */
@@ -36,20 +37,20 @@ namespace Backend.Repository.impl
                 .FirstOrDefaultAsync();
         }
         /*
-         * Lấy lesson theo quizId
+         * lấy Unit tương ứng với quiz
          * 
          * thuphuong21072004
          */
-        public async Task<Lesson> GetLessonByQuizId(int quizId)
+        public async Task<Unit> GetUnitByQuizId(int quizId)
         {
             var quiz = await _context.Quizzes.FindAsync(quizId);
             if (quiz == null) return null;
 
-            return await _context.Lessons.FindAsync(quiz.LessonId);
+            return await _context.Units.FindAsync(quiz.UnitId);
         }
 
         /*
-         * Lưu thông tin quiz của user
+         * lưu thay đổi vào database
          * 
          * thuphuong21072004
          */
@@ -71,7 +72,17 @@ namespace Backend.Repository.impl
                 _context.UserQuiz.Update(exist);
             }
         }
-    
+
+        /*
+         * lấy điểm bài kiểm tra
+         * 
+         * thuphuong21072004
+         */
+        public async Task<UserQuiz?> GetUserQuiz(int userId, int quizId)
+        {
+            return await _context.UserQuiz
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.QuizId == quizId);
+        }
         // Quiz
         /*
          * Thêm quiz mới
@@ -92,40 +103,18 @@ namespace Backend.Repository.impl
             _context.Quizzes.Update(quiz);
         }
         /*
-         * Xóa quiz
+         * xóa quiz và toàn bộ question, answer liên quan
          * 
          * thuphuong21072004
          */
         public async Task DeleteQuiz(int quizId)
         {
-            
-            var questionIds = await _context.Questions
-                .Where(q => q.QuizId == quizId)
-                .Select(q => q.QuestionId)
-                .ToListAsync();
-
-            if (questionIds.Any())
-            {
-                var answers = await _context.Answers
-                    .Where(a => questionIds.Contains(a.QuestionId))
-                    .ToListAsync();
-
-                _context.Answers.RemoveRange(answers);
-            }
-
-            var questions = await _context.Questions
-                .Where(q => q.QuizId == quizId)
-                .ToListAsync();
-
-            _context.Questions.RemoveRange(questions);
-
             var quiz = await _context.Quizzes.FindAsync(quizId);
             if (quiz != null)
             {
                 _context.Quizzes.Remove(quiz);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
         }
         /*
         * Lấy quiz theo quizId
@@ -174,7 +163,7 @@ namespace Backend.Repository.impl
             _context.Questions.Update(question);
         }
         /*
-         * xóa danh sách câu hỏi
+         * xóa danh sách câu hỏi và các câu trả lời liên quan
          * 
          * thuphuong21072004
          */
@@ -258,9 +247,8 @@ namespace Backend.Repository.impl
             return await _context.Answers
                 .FirstOrDefaultAsync(x => x.AnswerId == answerId && x.QuestionId == questionId);
         }
-
         /*
-         * Lưu thông tin quiz của user
+         * lưu thay đổi vào database
          * 
          * thuphuong21072004
          */

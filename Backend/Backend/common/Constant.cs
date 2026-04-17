@@ -3,7 +3,7 @@
     public class Constant
     {
         /*
-         * key quyền cho người dùng
+         * định nghĩa các vai trò người dùng trong hệ thống
          * 14/03/2026
          * thuphuong21072004
          */

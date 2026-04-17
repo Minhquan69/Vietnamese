@@ -1,0 +1,114 @@
+<div class="lesson-container">
+
+    <div *ngIf="unit" class="unit-info">
+    
+        <h2>{{ unit.unitName }}</h2>
+    
+        <div class="objective">
+            <strong>Objective:</strong> {{ unit.objective }}
+        </div>
+    
+        <div class="description">
+            <strong>Description:</strong> {{ unit.description }}
+        </div>
+    
+    </div>
+
+    <video *ngIf="unit?.videoUrl" controls>
+        <source [src]="'http://localhost:5108/videos/' + unit.videoUrl" type="video/mp4">
+    </video>
+
+    <button class="btn start-btn" *ngIf="!showQuiz" (click)="startQuiz()">
+        Start the test
+    </button>
+
+    <div *ngIf="showQuiz && quiz">
+
+        <h2>{{ quiz.quizName }}</h2>
+
+        <div *ngFor="let q of quiz.questions; let i = index" class="question-box">
+
+            <div class="question-title">
+                Câu {{ i + 1 }}:
+            </div>
+
+            <div class="question-content">
+
+                <div *ngIf="q.questionText">
+                    {{ q.questionText }}
+                </div>
+
+                <img *ngIf="!q.questionText && q.imageUrl" [src]="'http://localhost:5108/images/' + q.imageUrl">
+
+                <audio *ngIf="!q.questionText && !q.imageUrl && q.audioUrl" controls
+                    [src]="'http://localhost:5108/audios/' + q.audioUrl">
+                </audio>
+
+            </div>
+
+            <div *ngFor="let a of q.answers" class="answer-option" [ngClass]="{
+             'correct': showResult && a.isCorrect,
+             'wrong': isWrong(q, a),
+             'unanswered': isUnanswered(q)
+           }">
+
+                <label class="answer-label">
+
+                    <input type="radio" name="q{{q.questionId}}" [disabled]="showResult"
+                        [checked]="selectedAnswers[q.questionId] === a.answerId" (change)="selectAnswer(q.questionId, a.answerId)" />
+
+                    <div class="answer-content">
+
+                        <span *ngIf="a.answerText">
+                            {{ a.answerText }}
+                        </span>
+
+                        <img *ngIf="!a.answerText && a.imageUrl" [src]="'http://localhost:5108/images/' + a.imageUrl">
+
+                        <audio *ngIf="!a.answerText && !a.imageUrl && a.audioUrl" controls
+                            [src]="'http://localhost:5108/audios/' + a.audioUrl">
+                        </audio>
+
+                    </div>
+
+                </label>
+
+            </div>
+
+        </div>
+
+        <button class="btn submit-btn" *ngIf="!isSubmitted" (click)="submitQuiz()">
+            Submit
+        </button>
+
+        <div class="result-box" *ngIf="showResult">
+        
+            <div *ngIf="previousScore > 0" class="old-score">
+                Previous score: {{ previousScore }}%
+            </div>
+        
+            <div class="current-score">
+                Current score: {{ currentScore | number:'1.0-0' }}%
+            </div>
+        
+            You got {{ correctCount }} / {{ quiz.questions.length }} correct
+            <br>
+        
+            <b *ngIf="isPassed" style="color:green">PASS</b>
+            <b *ngIf="!isPassed" style="color:red">FAIL</b>
+        
+        </div>
+
+        <div *ngIf="isSubmitted" class="after-submit">
+            <button *ngIf="isPassed" class="btn next-btn" (click)="goBackCourse()">
+                Next Unit
+            </button>
+
+            <button *ngIf="!isPassed" class="btn retry-btn" (click)="retryQuiz()">
+                Retry
+            </button>
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,61 @@
+<div class="progress-container">
+
+    <h2>My Learning Progress</h2>
+
+    <div *ngIf="loading">Loading...</div>
+
+    <div *ngFor="let level of levels" 
+         class="level-card" 
+         [ngClass]="getLevelState(level)">
+
+        <div class="level-header">
+            <span class="icon">
+                <ng-container [ngSwitch]="getLevelState(level)">
+                    <span *ngSwitchCase="'done'">✔</span>
+                    <span *ngSwitchCase="'current'">▶</span>
+                    <span *ngSwitchDefault>🔒</span>
+                </ng-container>
+            </span>
+
+            <h3>{{ level.levelName }}</h3>
+        </div>
+
+        <div *ngFor="let course of level.courses" 
+             class="course-item" 
+             [ngClass]="getCourseState(course)">
+
+            <div class="course-header">
+                <span class="icon">
+                    <ng-container [ngSwitch]="getCourseState(course)">
+                        <span *ngSwitchCase="'done'">✔</span>
+                        <span *ngSwitchCase="'current'">▶</span>
+                        <span *ngSwitchDefault>🔒</span>
+                    </ng-container>
+                </span>
+
+                <span class="course-title">
+                    {{ course.courseName }}
+                </span>
+            </div>
+
+            <div *ngFor="let unit of course.units"
+                 class="unit-item"
+                 [ngClass]="getunitState(unit)"
+                 (click)="openunit(unit)">
+
+                <span class="icon">
+                    <ng-container [ngSwitch]="getunitState(unit)">
+                        <span *ngSwitchCase="'done'">✔</span>
+                        <span *ngSwitchCase="'current'">▶</span>
+                        <span *ngSwitchDefault>🔒</span>
+                    </ng-container>
+                </span>
+
+                {{ unit.unitName }}
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

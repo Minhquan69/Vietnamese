@@ -17,25 +17,26 @@ namespace Backend.Repository.impl
          * 
          * thuphuong21072004
          */
-        public async Task<List<Course>> GetCourses(int levelId)
+        public async Task<List<Course>> GetAllCourses(int levelId, bool? isActive)
         {
-            return await _context.Courses
-                .Where(c => c.LevelId == levelId && c.IsActive == true)
+            var query = _context.Courses
+                .Where(c => c.LevelId == levelId)
+                .AsQueryable();
+            if (isActive.HasValue)
+            {
+                query = query.Where(c => c.IsActive == isActive.Value);
+            }
+
+            return await query
                 .OrderBy(c => c.OrderIndex)
                 .ToListAsync();
-        }
-
-        public async Task<Course?> GetCourseById(int courseId)
-        {
-            return await _context.Courses
-                .FirstOrDefaultAsync(c => c.CourseId == courseId);
         }
         /*
          * lay course theo id
          * 
          * thuphuong21072004
          */
-        public async Task<Course> GetById(int id)
+        public async Task<Course> GetCourseById(int id)
         {
             return await _context.Courses.FindAsync(id);
         }
@@ -44,7 +45,7 @@ namespace Backend.Repository.impl
          * 
          * thuphuong21072004
          */
-        public async Task Add(Course course)
+        public async Task AddCourse(Course course)
         {
             await _context.Courses.AddAsync(course);
         }
@@ -53,55 +54,17 @@ namespace Backend.Repository.impl
          * 
          * thuphuong21072004
          */
-        public async Task Update(Course course)
+        public async Task UpdateCourse(Course course)
         {
             _context.Courses.Update(course);
         }
         /*
-         * xoa course
+         * xóa course và toàn bộ dữ liệu liên quan
          * 
          * thuphuong21072004
          */
         public async Task DeleteCourses(List<int> ids)
         {
-            
-            var lessons = await _context.Lessons
-                .Where(l => ids.Contains(l.CourseId))
-                .ToListAsync();
-
-            var lessonIds = lessons.Select(l => l.LessonId).ToList();
-
-            if (lessonIds.Any())
-            {
-               
-                var quizzes = await _context.Quizzes
-                    .Where(q => lessonIds.Contains(q.LessonId))
-                    .ToListAsync();
-
-                var quizIds = quizzes.Select(q => q.QuizId).ToList();
-
-                if (quizIds.Any())
-                {
-                    
-                    var questions = await _context.Questions
-                        .Where(q => quizIds.Contains(q.QuizId))
-                        .ToListAsync();
-
-                    var questionIds = questions.Select(q => q.QuestionId).ToList();
-
-                    if (questionIds.Any())
-                    {
-                        var answers = await _context.Answers
-                            .Where(a => questionIds.Contains(a.QuestionId))
-                            .ToListAsync();
-
-                        _context.Answers.RemoveRange(answers);
-                    }
-                    _context.Questions.RemoveRange(questions);
-                    _context.Quizzes.RemoveRange(quizzes);
-                }
-                _context.Lessons.RemoveRange(lessons);
-            }
             var courses = await _context.Courses
                 .Where(c => ids.Contains(c.CourseId))
                 .ToListAsync();
@@ -113,7 +76,7 @@ namespace Backend.Repository.impl
         * 
         * thuphuong21072004
         */
-        public async Task Save()
+        public async Task SaveCourse()
         {
             await _context.SaveChangesAsync();
         }
@@ -132,43 +95,11 @@ namespace Backend.Repository.impl
                                 .Contains(uc.CourseId))
                 .ToListAsync();
         }
-
         /*
-         * mở khóa khóa học đầu tiên cho user khi họ bắt đầu một cấp độ mới
+         * lấy order max
          * 
          * thuphuong21072004
          */
-        public async Task UnlockFirstCourse(int userId, int levelId)
-        {
-            var firstCourse = await _context.Courses
-                .Where(c => c.LevelId == levelId)
-                .OrderBy(c => c.OrderIndex)
-                .FirstOrDefaultAsync();
-
-            if (firstCourse != null)
-            {
-                var exist = await _context.UserCourse
-                    .FirstOrDefaultAsync(x => x.UserId == userId && x.CourseId == firstCourse.CourseId);
-
-                if (exist == null)
-                {
-                    _context.UserCourse.Add(new UserCourse
-                    {
-                        UserId = userId,
-                        CourseId = firstCourse.CourseId,
-                        Status = false,
-                        AssignedDate = DateTime.Now
-                    });
-                }
-            }
-        }
-
-        public async Task<List<Course>> GetAllCourses()
-        {
-            return await _context.Courses
-                .OrderBy(x => x.OrderIndex)
-                .ToListAsync();
-        }
         public async Task<int> GetMaxOrderIndex(int levelId)
         {
             var maxOrder = await _context.Courses

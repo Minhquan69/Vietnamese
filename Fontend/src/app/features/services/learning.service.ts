@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { LevelDTO } from '../models/level.model';
+import { CourseDTO } from '../models/course.model';
+import { UnitDTO } from '../models/unit.model';
+import { QuizDTO } from '../models/quiz.model';
+import { SubmitQuizDTO } from '../models/submit-quiz.model';
 
 @Injectable({
   providedIn: 'root',
@@ -9,114 +14,114 @@ export class LearningService {
   private apiUrl = 'http://localhost:5108/api/learning';
 
   constructor(private http: HttpClient) {}
+  //token
+  private getOptions(isText: boolean = false) {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
 
-  //level
-  /*
-  lay tat ca level
-  thuphuong21072004
-  */
-  getLevels(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/listLevels`);
-  }
-  /*
-  lưu level
-  thuphuong21072004
-  */
-  saveLevel(dto: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/saveLevel`, dto, {
-      responseType: 'text',
-    });
-  }
-  
-  // course
-  /*
-  lấy khóa học theo level
-  thuphuong21072004
-  */
-  getCourses(levelId: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/listCourses?levelId=${levelId}`);
-  }
-  /*
-  lưu khóa học
-  thuphuong21072004
-  */
-  saveCourse(dto: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/saveCourse`, dto, {
-      responseType: 'text',
-    });
+    return {
+      headers: headers,
+      responseType: (isText ? 'text' : 'json') as 'json',
+    };
   }
 
-  // lesson
-  /*
-  lấy bài học theo khóa học
-  thuphuong21072004
-  */
-  getLessons(courseId: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/listLessons?courseId=${courseId}`);
+  // LEVEL
+  getLevels(): Observable<LevelDTO[]> {
+    return this.http.get<LevelDTO[]>(`${this.apiUrl}/listLevels`);
   }
-  /*
-  lưu bài học
-  thuphuong21072004
-  */
-  saveLesson(dto: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/saveLesson`, dto, {
-      responseType: 'text',
-    });
+  getLevelById(id: number): Observable<LevelDTO> {
+    return this.http.get<LevelDTO>(`${this.apiUrl}/getLevelById?id=${id}`);
   }
-
-  // User quiz
-  /*
-  lấy quiz theo lesson
-  thuphuong21072004
-  */
-  getQuiz(lessonId: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/allQuiz?lessonId=${lessonId}`);
-  }
-  /*
-  thêm bài kiểm tra
-  thuphuong21072004
-  */
-  saveQuiz(dto: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/saveQuiz`, dto, {
-      responseType: 'text',
-    });
-  }
-  /*
-  xóa bài kiểm tra
-  thuphuong21072004
-  */
-  deleteQuiz(quizId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/deleteQuiz/${quizId}`);
-  }
-  /*
-  nộp quiz
-  thuphuong21072004
-  */
-  submitQuiz(quizId: number, answerIds: number[]): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/submitQuiz`,
-      {
-        quizId: quizId,
-        answerIds: answerIds,
-      },
-      { responseType: 'text' },
+  saveLevel(dto: LevelDTO[]): Observable<string> {
+    return this.http.post<string>(
+      `${this.apiUrl}/saveLevel`,
+      dto,
+      this.getOptions(true),
     );
   }
 
-  // user learning
-  /*
-  lấy lộ trình học
-  thuphuong21072004
-  */
-  getLearningPath(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/learning-path`);
+  // COURSE
+  getCourses(levelId: number): Observable<CourseDTO[]> {
+    return this.http.get<CourseDTO[]>(
+      `${this.apiUrl}/listCourses?levelId=${levelId}`,
+    );
+  }
+  getCourseById(id: number): Observable<CourseDTO> {
+    return this.http.get<CourseDTO>(`${this.apiUrl}/getCourseById?id=${id}`);
+  }
+  saveCourse(dto: CourseDTO[]): Observable<string> {
+    return this.http.post<string>(
+      `${this.apiUrl}/saveCourse`,
+      dto,
+      this.getOptions(true),
+    );
   }
 
-  /*
-  lấy tiến độ học cá nhân
-  thuphuong21072004
-  */
-  getMyProgress(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/my-progress`);
+  // Unit
+  getUnits(courseId: number): Observable<UnitDTO[]> {
+    return this.http.get<UnitDTO[]>(
+      `${this.apiUrl}/listUnits?courseId=${courseId}`,
+    );
+  }
+  getUnitById(id: number): Observable<UnitDTO> {
+    return this.http.get<UnitDTO>(`${this.apiUrl}/getUnitById?id=${id}`);
+  }
+  saveUnit(dto: UnitDTO): Observable<string> {
+    return this.http.post<string>(
+      `${this.apiUrl}/saveUnit`,
+      dto,
+      this.getOptions(true),
+    );
+  }
+  deleteUnits(ids: number[]): Observable<string> {
+    return this.http.delete<string>(`${this.apiUrl}/deleteListUnit`, {
+      ...this.getOptions(true),
+      body: ids,
+    });
+  }
+  uploadMedia(formData: FormData) {
+    return this.http.post<any>(`${this.apiUrl}/uploadMedia`, formData);
+  }
+
+  // QUIZ
+  saveQuiz(dto: QuizDTO): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/quiz/full`, dto, {
+      responseType: 'text' as 'json',
+    });
+  }
+  deleteQuiz(quizId: number): Observable<string> {
+    return this.http.delete<string>(
+      `${this.apiUrl}/deleteQuiz?id=${quizId}`,
+      this.getOptions(true),
+    );
+  }
+  getQuiz(unitId: number): Observable<QuizDTO> {
+    return this.http.get<QuizDTO>(`${this.apiUrl}/allQuiz?UnitId=${unitId}`);
+  }
+
+  // USER
+  getLearningPath(): Observable<LevelDTO[]> {
+    return this.http.get<LevelDTO[]>(`${this.apiUrl}/learning-path`);
+  }
+  getMyProgress(): Observable<LevelDTO[]> {
+    return this.http.get<LevelDTO[]>(
+      `${this.apiUrl}/my-progress`,
+      this.getOptions(),
+    );
+  }
+  submitQuiz(dto: SubmitQuizDTO): Observable<string> {
+    return this.http.post<string>(
+      `${this.apiUrl}/submitQuiz`,
+      dto,
+      this.getOptions(true),
+    );
+  }
+  getMyQuizResult(quizId: number) {
+    return this.http.get<any>(
+      `${this.apiUrl}/my-quiz-result?quizId=${quizId}`,
+      this.getOptions(),
+    );
   }
 }

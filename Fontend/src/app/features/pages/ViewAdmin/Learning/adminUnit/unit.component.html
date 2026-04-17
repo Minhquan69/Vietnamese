@@ -1,0 +1,49 @@
+<div class="unit-container">
+
+    <div class="course-info" *ngIf="course as c">
+        <h2>{{ c.courseName }}</h2>
+        <p>{{ c.description }}</p>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>VideoUrl</th>
+                <th>Order</th>
+                <th>Description</th>
+                <th>Objective</th>
+                <th>Created By</th>
+                <th>Created Date</th>
+                <th>Active</th>
+                <th>Delete</th>
+                <th>Select</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let unit of units; trackBy: trackById" [ngClass]="{ 'deleted-row': unit.isDelete }">
+
+                <td> {{unit.unitName}}</td>
+                <td>{{unit.videoUrl}}</td>
+                <td>{{unit.orderIndex}}</td>
+                <td>{{unit.description}}</td>
+                <td>{{unit.objective}}</td>
+                <td>{{unit.createdBy}}</td>
+                <td>{{unit.createdDate}}</td>
+                <td>{{unit.isActive}}</td>
+                <td><input type="checkbox" [(ngModel)]="unit.isDelete" /></td>
+                <td><a [routerLink]="['/admin/unitDetail']" [queryParams]="{ unitId: unit.unitId }">➡</a></td>
+            </tr>
+
+        </tbody>
+    </table>
+    <button [routerLink]="['/admin/unitDetail']" [queryParams]="{ courseId: courseId }">
+         Add unit
+    </button>
+
+    <button class="delete-btn" (click)="deleteSelected()">
+        Delete Selected
+    </button>
+
+</div>

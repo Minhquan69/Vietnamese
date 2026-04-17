@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Models
 {
@@ -11,7 +12,7 @@ namespace Backend.Models
         public string Sentence { get; set; }
 
         public double StartTime { get; set; }
-
-        public Video Video { get; set; }
+        [ForeignKey("VideoId")]
+        public virtual Video Video { get; set; }
     }
 }

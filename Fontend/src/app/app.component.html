@@ -11,7 +11,6 @@
 </header>
 
 <div class="main-container">
-<!-- LEFT MENU -->
 
 <aside class="left-menu">
     <h3>Menu</h3>
@@ -37,10 +36,10 @@
     </li>
 </ul>
 
-    <ul *ngIf="role == 2">
+    <ul *ngIf="role === 'User'">
         <li><button class="menu-btn" routerLink="/home">Home</button></li>
         <li><button class="menu-btn" routerLink="user/search">Vocabulary Search</button></li>
-        <li><button class="menu-btn" routerLink="/user/lessons">Courses</button></li>
+        <li><button class="menu-btn" routerLink="/user/units">Courses</button></li>
         <li><button class="menu-btn" routerLink="/practice">Practice Tests</button></li>
         <li><button class="menu-btn" routerLink="/pronunciation">Pronunciation Practice</button></li>
         <li><button class="menu-btn" routerLink="/classes">Online Classes</button></li>
@@ -67,12 +66,12 @@
         </li>
     </ul>
 
-    <ul *ngIf="role == 1">
+    <ul *ngIf="role === 'Admin' || role === 'Moderator'">
         <li><button class="menu-btn" routerLink="/home">Home</button></li>
         <li><button class="menu-btn" routerLink="/dashboard">Dashboard</button></li>
         <li><button class="menu-btn" routerLink="admin/users">Manage Users</button></li>
         <li><button class="menu-btn" routerLink="admin/videos">Manage Videos</button></li>
-        <li><button class="menu-btn" routerLink="admin/lessons">Manage Lessons</button></li>
+        <li><button class="menu-btn" routerLink="admin/levels">Manage Lessons</button></li>
         <li><button class="menu-btn" routerLink="/ManageTests">Manage Tests</button></li>
         <li>
         

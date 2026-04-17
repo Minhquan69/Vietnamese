@@ -43,13 +43,11 @@ export class SearchComponent implements OnInit {
   startSearch() {
     if (!this.keyword.trim()) return;
 
-    // Reset state để Angular render lại
     this.hasSearched = false;
     this.noResult = false;
     this.videoId = '';
     this.highlightedSubtitle = '';
 
-    // Delay 1 tick để Angular update UI
     setTimeout(() => {
       this.searchkeyword = this.keyword;
       this.hasSearched = true;
@@ -106,8 +104,6 @@ export class SearchComponent implements OnInit {
       `<span class="highlight">$&</span>`,
     );
   }
-
-  
 
   previousVideo() {
     if (this.index <= 0) return;

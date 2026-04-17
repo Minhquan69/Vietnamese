@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from '../../services/account.service';
+import { BaseService } from '../../services/base.service';
 
 @Component({
   selector: 'app-profile',
@@ -20,7 +21,9 @@ export class ProfileComponent {
   oldPassword: string = '';
   newPassword: string = '';
 
-  constructor(private api: AccountService) {}
+  constructor(private api: AccountService,
+    private baseService: BaseService,
+  ) {}
 
   ngOnInit() {
     this.loadProfile();
@@ -42,10 +45,14 @@ export class ProfileComponent {
       name: this.newName,
       email: this.newEmail,
     };
-
-    this.api.updateProfile(data).subscribe(() => {
-      alert('Profile updated');
-      this.loadProfile();
+    
+    this.api.updateProfile(data).subscribe({
+      next: () => {
+        alert('Profile updated');
+        this.name = this.newName;
+        this.email = this.newEmail;
+      },
+      error: (err) => this.baseService.handleError(err, 'Update failed'),
     });
   }
 
@@ -55,10 +62,14 @@ export class ProfileComponent {
       newPassword: this.newPassword,
     };
 
-    this.api.changePassword(data).subscribe(() => {
-      alert('Password changed');
-      this.oldPassword = '';
-      this.newPassword = '';
+    this.api.changePassword(data).subscribe({
+      next: () => {
+        alert('Password changed');
+        this.oldPassword = '';
+        this.newPassword = '';
+      },
+      error: (err) =>
+        this.baseService.handleError(err, 'Change password failed'),
     });
   }
 }

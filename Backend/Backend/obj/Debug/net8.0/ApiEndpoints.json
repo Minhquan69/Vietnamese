@@ -160,9 +160,25 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "lessonId",
+        "Name": "UnitId",
         "Type": "System.Int32",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.LevelController",
+    "Method": "DeleteListUnit",
+    "RelativePath": "api/learning/deleteListUnit",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ids",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -172,6 +188,70 @@
     "Method": "DeleteQuiz",
     "RelativePath": "api/learning/deleteQuiz",
     "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.LevelController",
+    "Method": "DeleteVideo",
+    "RelativePath": "api/learning/deleteVideo",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fileName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.LevelController",
+    "Method": "GetCourseById",
+    "RelativePath": "api/learning/getCourseById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.LevelController",
+    "Method": "GetLevelById",
+    "RelativePath": "api/learning/getLevelById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.LevelController",
+    "Method": "GetUnitById",
+    "RelativePath": "api/learning/getUnitById",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -211,8 +291,18 @@
   },
   {
     "ContainingType": "Backend.Controllers.LevelController",
-    "Method": "GetLessons",
-    "RelativePath": "api/learning/listLessons",
+    "Method": "GetLevels",
+    "RelativePath": "api/learning/listLevels",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.LevelController",
+    "Method": "GetUnits",
+    "RelativePath": "api/learning/listUnits",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -227,8 +317,8 @@
   },
   {
     "ContainingType": "Backend.Controllers.LevelController",
-    "Method": "GetLevels",
-    "RelativePath": "api/learning/listLevels",
+    "Method": "GetMyProgress",
+    "RelativePath": "api/learning/my-progress",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -237,12 +327,18 @@
   },
   {
     "ContainingType": "Backend.Controllers.LevelController",
-    "Method": "GetMyProgress",
-    "RelativePath": "api/learning/my-progress",
+    "Method": "GetMyQuizResult",
+    "RelativePath": "api/learning/my-quiz-result",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "quizId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -279,22 +375,6 @@
   },
   {
     "ContainingType": "Backend.Controllers.LevelController",
-    "Method": "SaveLesson",
-    "RelativePath": "api/learning/saveLesson",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "list",
-        "Type": "System.Collections.Generic.List\u00601[[Backend.dto.LessonDTO, Backend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Backend.Controllers.LevelController",
     "Method": "SaveLevel",
     "RelativePath": "api/learning/saveLevel",
     "HttpMethod": "POST",
@@ -304,6 +384,22 @@
       {
         "Name": "list",
         "Type": "System.Collections.Generic.List\u00601[[Backend.dto.LevelDTO, Backend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.LevelController",
+    "Method": "SaveUnit",
+    "RelativePath": "api/learning/saveUnit",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Backend.dto.UnitDTO",
         "IsRequired": true
       }
     ],
@@ -321,6 +417,22 @@
         "Name": "dto",
         "Type": "Backend.dto.SubmitQuizDTO",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Backend.Controllers.LevelController",
+    "Method": "UploadMedia",
+    "RelativePath": "api/learning/uploadMedia",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

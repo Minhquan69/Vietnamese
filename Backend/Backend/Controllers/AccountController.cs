@@ -20,7 +20,7 @@ namespace Backend.Controllers
             _userContext = userContext;
         }
         /*
-         * đăng nhập thông tin      
+         * xác thực đăng nhập và trả về token     
          * 06/03/2026 
          * thuphuong21072004
          */
@@ -40,7 +40,7 @@ namespace Backend.Controllers
             return Ok(await _userService.Register(dto));
         }
         /*
-         * lấy thông tin user sau khi đăng nhập
+         * lấy thông tin user hiện tại từ token
          * 16/03/2026
          * thuphuong21072004
          */
@@ -53,7 +53,7 @@ namespace Backend.Controllers
                 userId = _userContext.GetUserId(),
                 email = _userContext.GetEmail(),
                 name = _userContext.GetName(),
-                role = _userContext.GetRole()
+                role = _userContext.GetRole() 
             });
         }
         /*
@@ -69,7 +69,7 @@ namespace Backend.Controllers
             return Ok("Changed password");
         }
         /*
-         * cập nhật thông tin tài khoản
+         * cập nhật thông tin cá nhân của user
          * 
          * thuphuong21072004
          */
@@ -81,7 +81,7 @@ namespace Backend.Controllers
             return Ok();
         }
         /*
-         * danh sách người dùng theo trạng thái, quyền, tìm kiếm theo email
+         * lấy danh sách người dùng theo điều kiện tìm kiếm và phân trang
          * 
          * thuphuong21072004
          */

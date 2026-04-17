@@ -64,7 +64,7 @@ builder.Services.AddHttpClient<VideoRepositoryImpl>();
 builder.Services.AddScoped<VideoRepository, VideoRepositoryImpl>();
 builder.Services.AddScoped<LevelRepository, LevelRepositoryImpl>();
 builder.Services.AddScoped<CourseRepository, CourseRepositoryImpl>();
-builder.Services.AddScoped<LessonRepository, LessonRepositoryImpl>();
+builder.Services.AddScoped<UnitRepository, UnitRepositoryImpl>();
 builder.Services.AddScoped<ProgressRepository, ProgressRepositoryImpl>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -72,8 +72,10 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<QuizRepository, QuizRepositoryImpl>();
 var app = builder.Build();
 
-app.UseCors("AllowAngular");
+app.UseMiddleware<ExceptionMiddleware>();
 
+app.UseCors("AllowAngular");
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

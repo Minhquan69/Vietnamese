@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AccountService } from '../../services/account.service';
+import { BaseService } from '../../services/base.service';
 
 @Component({
   selector: 'app-login',
@@ -17,25 +18,26 @@ export class LoginComponent {
   constructor(
     private api: AccountService,
     private router: Router,
+    private baseService: BaseService,
   ) {}
 
   login() {
-  const data = {
-    email: this.email,
-    password: this.password,
-  };
+    const data = {
+      email: this.email,
+      password: this.password,
+    };
 
-  this.api.login(data).subscribe({
-    next: (res: any) => {
-      localStorage.setItem('token', res.token);
+    this.api.login(data).subscribe({
+      next: (res: any) => {
+        localStorage.setItem('token', res.token);
 
-      this.router.navigate(['/home']).then(() => {
-        window.location.reload();
-      });
-    },
-    error: () => {
-      alert('Email or password is incorrect');
-    },
-  });
-}
+        this.router.navigate(['/home']).then(() => {
+          window.location.reload();
+        });
+      },
+      error: (err) => {
+        this.baseService.handleError(err, 'Login failed');
+      },
+    });
+  }
 }

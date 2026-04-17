@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AccountService } from './features/services/account.service';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -10,7 +11,7 @@ import { AccountService } from './features/services/account.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  role: number | null = null;
+  role: string | null = null; 
   userId: number | null = null;
   name: string | null = null;
   isLogin: boolean = false;
@@ -32,9 +33,10 @@ export class AppComponent {
   this.api.getCurrentUser().subscribe({
     next: (res: any) => {
       this.userId = res.userId;
-      this.role = parseInt(res.role.trim());
+      this.role = res.role ? res.role.toString().trim() : null;
       this.name = res.name;
       this.isLogin = true;
+
     },
     error: () => {
       this.resetUser();

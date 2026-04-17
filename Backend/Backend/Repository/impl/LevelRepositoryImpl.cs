@@ -17,10 +17,14 @@ namespace Backend.Repository.impl
          * 26/03/2026
          * thuphuong21072004
          */
-        public async Task<List<Level>> GetLevels()
+        public async Task<List<Level>> GetAllLevels( bool? isActive)
         {
-            return await _context.Levels
-                .Where(x => x.IsActive == true)
+            var query = _context.Levels.AsQueryable();
+
+            if (isActive.HasValue)
+                query = query.Where(l => l.IsActive == isActive.Value);
+
+            return await query
                 .OrderBy(x => x.OrderIndex)
                 .ToListAsync();
         }
@@ -52,58 +56,26 @@ namespace Backend.Repository.impl
             _context.Levels.Update(level);
         }
         /*
-         * xóa tin cấp độ
+         * xóa cấp độ và toàn bộ dữ liệu liên quan
          * 26/03/2026
          * thuphuong21072004
          */
         public async Task DeleteLevels(List<int> ids)
         {
-
-            var courses = await _context.Courses
-                .Where(c => ids.Contains(c.LevelId))
-                .ToListAsync();
-
-            var courseIds = courses.Select(c => c.CourseId).ToList();
-
-            var lessons = await _context.Lessons
-                .Where(l => courseIds.Contains(l.CourseId))
-                .ToListAsync();
-
-            var lessonIds = lessons.Select(l => l.LessonId).ToList();
-
-            var quizzes = await _context.Quizzes
-                .Where(q => lessonIds.Contains(q.LessonId))
-                .ToListAsync();
-
-            var quizIds = quizzes.Select(q => q.QuizId).ToList();
-
-            var questions = await _context.Questions
-                .Where(q => quizIds.Contains(q.QuizId))
-                .ToListAsync();
-
-            var questionIds = questions.Select(q => q.QuestionId).ToList();
-
-            var answers = await _context.Answers
-                .Where(a => questionIds.Contains(a.QuestionId))
-                .ToListAsync();
-            _context.Answers.RemoveRange(answers);
-            _context.Questions.RemoveRange(questions);
-            _context.Quizzes.RemoveRange(quizzes);
-            _context.Lessons.RemoveRange(lessons);
-            _context.Courses.RemoveRange(courses);
-
             var levels = await _context.Levels
-                .Where(l => ids.Contains(l.LevelId))
+                .Where(x => ids.Contains(x.LevelId))
                 .ToListAsync();
 
             _context.Levels.RemoveRange(levels);
+
+            await _context.SaveChangesAsync();
         }
         /*
          * lưu thay đổi vào database
          * 26/03/2026
          * thuphuong21072004
          */
-        public async Task Save()
+        public async Task SaveLevel()
         {
             await _context.SaveChangesAsync();
         }
@@ -119,6 +91,16 @@ namespace Backend.Repository.impl
                 .MaxAsync();
 
             return max ?? 0;
+        }
+        /*
+         * 
+         * 
+         * thuphuong21072004
+         */
+        public IQueryable<Level> GetQueryable()
+        {
+          
+            return _context.Levels.AsNoTracking();
         }
     }
 }

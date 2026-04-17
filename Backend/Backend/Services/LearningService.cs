@@ -1,26 +1,32 @@
 ﻿using Backend.dto;
+using Backend.Models;
 
 namespace Backend.Services
 {
     public interface LearningService
     {
         Task<List<LevelDTO>> GetLevels();
+        Task<LevelDTO?> GetLevelById(int levelId);
         Task SaveLevels(List<LevelDTO> list);
 
         Task<List<CourseDTO>> GetCourses(int levelId);
+        Task<CourseDTO?> GetCourseById(int courseId);
         Task SaveCourses(List<CourseDTO> list);
 
-        Task<List<LessonDTO>> GetLessons(int courseId);
-        Task SaveLessons(List<LessonDTO> list);
-        
+        Task<List<UnitDTO>> GetUnits(int courseId);
+        Task<UnitDTO?> GetUnitById(int UnitId);
+        Task SaveUnit(UnitDTO dto);
+        Task DeleteUnits(List<int> UnitIds);
+
         Task<List<LevelDTO>> GetMyProgress();
         Task<List<LevelDTO>> GetAllLearningPath();
 
-        Task<QuizDTO> GetQuizByLesson(int lessonId);
-        Task UnlockNextLevel(int lessonId);
-        Task UnlockNextCourse(int lessonId);
-        Task UnlockNextLesson(int lessonId);
+        Task<QuizDTO> GetQuizByUnit(int UnitId);
+        Task UnlockNextLevel(int UnitId);
+        Task UnlockNextCourse(int UnitId);
+        Task UnlockNextUnit(int UnitId);
         Task SubmitQuiz(int quizId, List<int> answerIds);
+        Task<UserQuiz?> GetMyQuizResult(int quizId);
         Task SaveQuiz(QuizDTO dto);
         Task DeleteQuiz(int quizId);
 

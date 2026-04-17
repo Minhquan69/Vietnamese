@@ -1,66 +1,29 @@
-<main class="main-home">
+<div class="progress-container">
 
-    <section class="hero">
+  <h2>Learning Path</h2>
 
-        <h1>{{heroTitle}}</h1>
+  <div *ngFor="let level of levels" class="level-card">
 
-        <p>{{heroDescription}}</p>
+    <div class="level-header">
+      <h3>{{ level.levelName }}</h3>
+    </div>
 
-        <button (click)="startLearning()">
-            Start Learning
-        </button>
+    <div *ngFor="let course of level.courses || []" class="course-item">
 
-    </section>
+      <div class="course-header">
+        <span class="course-title">
+          {{ course.courseName }}
+        </span>
+      </div>
 
-    <section class="about">
+      <div *ngFor="let unit of course.units || []" class="unit-item">
 
-        <h2>About VietPhuong</h2>
+        {{ unit.unitName }}
 
-        <p>
-            VietPhuong is an online platform designed to help foreigners
-            learn Vietnamese easily through vocabulary practice,
-            pronunciation exercises and real-life conversations.
-        </p>
+      </div>
 
-    </section>
+    </div>
 
-    <section class="features">
+  </div>
 
-        <div class="feature-card" *ngFor="let f of features">
-
-            <h3>{{f.title}}</h3>
-
-            <p>{{f.description}}</p>
-
-        </div>
-
-    </section>
-
-    <section class="courses">
-
-        <h2>Popular Lessons</h2>
-
-        <div class="course-grid">
-
-            <div class="course-card" *ngFor="let c of courses">
-
-                <h4>{{c.title}}</h4>
-
-                <p>{{c.description}}</p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <section class="cta">
-
-        <h2>Start Learning Vietnamese Today</h2>
-
-        <a routerLink="/register">
-            Create Account
-        </a>
-
-    </section>
-</main>
+</div>

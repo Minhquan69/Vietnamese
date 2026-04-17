@@ -11,5 +11,6 @@
         public bool IsDelete { get; set; }
         public List<CourseDTO> Courses { get; set; }
 
+
     }
 }

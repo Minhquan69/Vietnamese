@@ -1,4 +1,6 @@
-﻿namespace Backend.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Backend.Models
 {
     public class UserCourse
     {
@@ -9,7 +11,10 @@
         
         public DateTime? AssignedDate { get; set; }
         public DateTime? CompletedDate { get; set; }
+        [ForeignKey("CourseId")]
+        public virtual Course Course { get; set; }
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
 
-        public Course Course { get; set; }
     }
 }

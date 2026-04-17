@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient,HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SearchResult } from '../models/search-result.model';
 import { Video } from '../models/video.model';
@@ -8,58 +8,87 @@ import { Video } from '../models/video.model';
 })
 export class VideoService {
   private apiUrl = 'http://localhost:5108/api/videos';
-
+  // token
   constructor(private http: HttpClient) {}
+  private getOptions(isText: boolean = false) {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
 
-  searchVideo(keyword: string): Observable<SearchResult[]> {
-    return this.http.get<SearchResult[]>(
-      `${this.apiUrl}/searchVideo?keyword=${encodeURIComponent(keyword)}`,
-    );
+    return {
+      headers: headers,
+      responseType: (isText ? 'text' : 'json') as 'json',
+    };
   }
-
-  listVideo(
-    status?: number,
+  /*
+  tra từ trong video
+  thuphuong21072004
+  */
+  searchVideo(
+    keyword: string,
     page: number = 1,
     pageSize: number = 10,
-  ): Observable<any> {
-    let params = new HttpParams().set('page', page).set('pageSize', pageSize);
+  ): Observable<SearchResult[]> {
+    const params = new HttpParams()
+      .set('keyword', keyword)
+      .set('page', page)
+      .set('pageSize', pageSize);
 
-    if (status !== undefined) {
-      params = params.set('status', status);
-    }
-
-    return this.http.get<any>(`${this.apiUrl}/listVideo`, { params });
+    return this.http.get<SearchResult[]>(`${this.apiUrl}/searchVideo`, {
+      params,
+    });
   }
-  insertVideo(youtubeId: string): Observable<any> {
-    const token = localStorage.getItem('token');
+  /*
+  danh sách video
+  thuphuong21072004
+  */
+  listVideo(
+  status?: number,
+  page: number = 1,
+  pageSize: number = 10,
+): Observable<{ total: number, data: Video[] }> { // Định nghĩa cấu trúc trả về ngay tại đây
+  let params = new HttpParams().set('page', page).set('pageSize', pageSize);
 
-    return this.http.post(
+  if (status !== undefined && status !== null) {
+    params = params.set('status', status);
+  }
+
+  return this.http.get<{ total: number, data: Video[] }>(`${this.apiUrl}/listVideo`, { params });
+}
+  /*
+  thêm video mới
+  thuphuong21072004
+  */
+  insertVideo(youtubeId: string): Observable<string> {
+    return this.http.post<string>(
       `${this.apiUrl}/insertVideo`,
       { youtubeId: youtubeId },
+      this.getOptions(true),
+    );
+  }
+  /* 
+  sửa trạng thái video
+  thuphuong21072004
+  */
+  updateVideo(videoId: number, status: number): Observable<string> {
+    const params = new HttpParams()
+      .set('videoId', videoId)
+      .set('status', status);
+
+    return this.http.put<string>(
+      `${this.apiUrl}/updateVideo`,
+      {}, // Body trống
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        responseType: 'text', // QUAN TRỌNG
+        ...this.getOptions(true),
+        params,
       },
     );
   }
-  updateVideo(videoId: number, status: number): Observable<any> {
-    const token = localStorage.getItem('token');
-
-    const url = `${this.apiUrl}/updateVideo?videoId=${videoId}&status=${status}`;
-
-    return this.http.put(
-      url,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        responseType: 'text',
-      },
-    );
-  }
+  /*
+  lấy video theo id
+  thuphuong21072004
+  */
   getVideoById(id: string): Observable<Video> {
     return this.http.get<Video>(`${this.apiUrl}/${id}`);
   }

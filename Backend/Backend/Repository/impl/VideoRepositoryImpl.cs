@@ -21,6 +21,7 @@ namespace Backend.Repository.impl
         }
         /*
          * thêm video mới vào hệ thống
+         * gửi yêu cầu crawl video từ Youtube vào hệ thống
          * 13/03/2026
          * thuphuong21072004
          */
@@ -40,7 +41,7 @@ namespace Backend.Repository.impl
             );
         }
         /*
-         * lấy danh sách theo trạng thái (phân trang)
+         * lấy danh sách video theo trạng thái (phân trang, sắp xếp mới nhất)
          * 14/03/2026
          * thuphuong21072004
          */
@@ -60,7 +61,7 @@ namespace Backend.Repository.impl
                 .ToListAsync();
         }
         /*
-         * tìm kiếm video theo từ khóa
+         * tìm kiếm video theo từ khóa trong transcript (phân trang)
          * 07/03/2026
          * thuphuong21072004
          */

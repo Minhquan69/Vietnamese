@@ -3,7 +3,6 @@ import { HttpClient,HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { LoginResult } from '../models/login-result.model';
-import { ChangePasswordResult } from '../models/changePassword.model';
 import { UserResult } from '../models/user-result.model';
 @Injectable({
   providedIn: 'root',
@@ -22,8 +21,10 @@ export class AccountService {
   getCurrentUser(): Observable<UserResult> {
     return this.http.get<UserResult>(`${this.apiUrl}/me`);
   }
-  changePassword(data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/change-password`, data);
+  changePassword(data: any): Observable<string> {
+    return this.http.put(`${this.apiUrl}/change-password`, data, {
+      responseType: 'text',
+    });
   }
   updateProfile(data: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/update-profile`, data);

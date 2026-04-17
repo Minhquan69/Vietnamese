@@ -3,6 +3,7 @@ using Backend.dto;
 using Backend.Models;
 using Backend.Repository;
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services.impl
@@ -11,24 +12,62 @@ namespace Backend.Services.impl
     {
         private readonly LevelRepository _levelRepository;
         private readonly CourseRepository _courseRepository;
-        private readonly LessonRepository _lessonRepository;
+        private readonly UnitRepository _unitRepository;
         private readonly UserContextUtil _userContext;
         private readonly ProgressRepository _progressRepository;
         public readonly QuizRepository _quizRepository;
         private readonly IMapper _mapper;
+
         public LearningServiceImpl(
             LevelRepository levelRepository,
             CourseRepository courseRepository,
-            LessonRepository lessonRepository,
+            UnitRepository unitRepository,
             UserContextUtil userContext, IMapper mapper, ProgressRepository progressRepository, QuizRepository quizRepository)
         {
             _levelRepository = levelRepository;
             _courseRepository = courseRepository;
-            _lessonRepository = lessonRepository;
+            _unitRepository = unitRepository;
             _userContext = userContext;
             _mapper = mapper;
             _progressRepository = progressRepository;
             _quizRepository = quizRepository;
+        }
+        // validate
+        /*
+         * kiểm tra quyền là admin
+         * 
+         * thuphuong21072004
+         */
+        private bool ValidateAdmin()
+        {
+            string role = _userContext.GetRole();
+            if (role == common.Constant.Role.Admin)
+            {
+                return true;
+            }
+            return false;
+        }
+        /*
+         * kiem tra quyen user
+         * 
+         * thuphuong21072004
+         */
+        private bool ValidateUser()
+        {
+            string role = _userContext.GetRole();
+            if (role == common.Constant.Role.User) { return true; }
+            return false;
+        }
+        /*
+         * kiêm tra cong tac vien
+         * 
+         * thuphuong21072004
+         */
+        private bool ValidateModerator()
+        {
+            string role = _userContext.GetRole();
+            if (role == common.Constant.Role.Moderator) { return true; }
+            return false;
         }
 
         //level
@@ -39,17 +78,34 @@ namespace Backend.Services.impl
          */
         public async Task<List<LevelDTO>> GetLevels()
         {
-            var levels = await _levelRepository.GetLevels();
+            var levels = await _levelRepository.GetAllLevels(null);
 
             return _mapper.Map<List<LevelDTO>>(levels);
         }
         /*
-         * lưu level
+         * lấy level theo id
+         * 
+         * thuphuong21072004
+         */
+        public async Task<LevelDTO?> GetLevelById(int levelId)
+        {
+            var level = await _levelRepository.GetLevelById(levelId);
+
+            if (level == null) return null;
+
+            return _mapper.Map<LevelDTO>(level);
+        }
+        /*
+         * thêm, cập nhật và xóa danh sách level
          * 
          * thuphuong21072004
          */
         public async Task SaveLevels(List<LevelDTO> list)
         {
+            if (!ValidateAdmin()&&!ValidateModerator())
+            {
+                throw new UnauthorizedAccessException("You do not have the right to manage Levels.");
+            }
             if (list == null) return;
 
             var deleteIds = list
@@ -59,6 +115,10 @@ namespace Backend.Services.impl
 
             if (deleteIds.Any())
             {
+                if (!ValidateAdmin())
+                {
+                    throw new UnauthorizedAccessException("You do not have the right to manage Levels.");
+                }
                 await _levelRepository.DeleteLevels(deleteIds);
             }
 
@@ -88,12 +148,12 @@ namespace Backend.Services.impl
                 }
             }
 
-            await _levelRepository.Save();
+            await _levelRepository.SaveLevel();
         }
 
         // course
         /*
-         * lấy danh sách course theo level
+         * lấy danh sách course theo level kèm trạng thái của user
          * 
          * thuphuong21072004
          */
@@ -101,7 +161,7 @@ namespace Backend.Services.impl
         {
             int userId = _userContext.GetUserId();
 
-            var courses = await _courseRepository.GetCourses(levelId);
+            var courses = await _courseRepository.GetAllCourses(levelId,null);
             var userCourses = await _courseRepository.GetUserCourses(userId, levelId);
 
             return courses.Select(c =>
@@ -114,15 +174,32 @@ namespace Backend.Services.impl
             }).ToList();
         }
         /*
-         * lưu course
+         * lấy course theo id
+         * 
+         * thuphuong21072004
+         */
+        public async Task<CourseDTO?> GetCourseById(int courseId)
+        {
+            var course = await _courseRepository.GetCourseById(courseId);
+
+            if (course == null) return null;
+
+            return _mapper.Map<CourseDTO>(course);
+        }
+        /*
+         * thêm, cập nhật và xóa danh sách course
          * 
          * thuphuong21072004
          */
         public async Task SaveCourses(List<CourseDTO> list)
         {
+            if (!ValidateAdmin() && !ValidateModerator())
+            {
+                throw new UnauthorizedAccessException("You do not have course management privileges.");
+            }
             if (list == null) return;
 
-            int userId = _userContext.GetUserId();
+            string currentUserName = _userContext.GetName();
 
             var deleteIds = list
                 .Where(x => x.IsDelete && x.CourseId != 0)
@@ -131,6 +208,10 @@ namespace Backend.Services.impl
 
             if (deleteIds.Any())
             {
+                if (!ValidateAdmin())
+                {
+                    throw new UnauthorizedAccessException("You do not have course management privileges.");
+                }
                 await _courseRepository.DeleteCourses(deleteIds);
             }
 
@@ -139,17 +220,17 @@ namespace Backend.Services.impl
                 if (dto.CourseId == 0)
                 {
                     var course = _mapper.Map<Course>(dto);
-                    course.CreatedBy = userId;
+                    course.CreatedBy = currentUserName;
                     course.IsActive = true;
 
                     var maxOrder = await _courseRepository.GetMaxOrderIndex(dto.LevelId);
                     course.OrderIndex = maxOrder + 1;
 
-                    await _courseRepository.Add(course);
+                    await _courseRepository.AddCourse(course);
                 }
                 else
                 {
-                    var course = await _courseRepository.GetById(dto.CourseId);
+                    var course = await _courseRepository.GetCourseById(dto.CourseId);
 
                     if (course != null)
                     {
@@ -158,113 +239,162 @@ namespace Backend.Services.impl
 
                         _mapper.Map(dto, course);
 
-                        await _courseRepository.Update(course);
+                        await _courseRepository.UpdateCourse(course);
                     }
                 }
             }
 
-            await _courseRepository.Save();
+            await _courseRepository.SaveCourse();
         }
 
-        // lesson
+        // Unit
         /*
-         * lấy danh sách lesson theo course
+         * lấy danh sách Unit theo course kèm tiến trình học của user
          * 
          * thuphuong21072004
          */
-        public async Task<List<LessonDTO>> GetLessons(int courseId)
+        public async Task<List<UnitDTO>> GetUnits(int courseId)
         {
             int userId = _userContext.GetUserId();
 
-            var lessons = await _lessonRepository.GetLessons(courseId);
-            var progress = await _lessonRepository.GetUserProgress(userId, courseId);
+            var Units = await _unitRepository.GetAllUnits(courseId, null);
+            var progress = await _unitRepository.GetUserProgress(userId, courseId);
 
-            return lessons.Select(l =>
+            return Units.Select(l =>
             {
-                var dto = _mapper.Map<LessonDTO>(l);
+                var dto = _mapper.Map<UnitDTO>(l);
 
-                var p = progress.FirstOrDefault(x => x.LessonId == l.LessonId);
+                var p = progress.FirstOrDefault(x => x.UnitId == l.UnitId);
 
                 return dto;
             }).ToList();
         }
         /*
-         * lưu lesson
+         * lấy Unit theo id
          * 
          * thuphuong21072004
          */
-        public async Task SaveLessons(List<LessonDTO> list)
+        public async Task<UnitDTO?> GetUnitById(int UnitId)
         {
-            if (list == null) return;
+            var Unit = await _unitRepository.GetUnitById(UnitId);
 
-            var deleteIds = list
-                .Where(x => x.IsDelete && x.LessonId != 0)
-                .Select(x => x.LessonId)
-                .ToList();
+            if (Unit == null) return null;
 
-            if (deleteIds.Any())
+            return _mapper.Map<UnitDTO>(Unit);
+        }
+        /*
+         * thêm hoặc cập nhật Unit và xử lý file video cũ
+         * 
+         * thuphuong21072004
+         */
+        public async Task SaveUnit(UnitDTO dto)
+        {
+            if (!ValidateAdmin() && !ValidateModerator())
             {
-                await _lessonRepository.DeleteLessons(deleteIds);
+                throw new UnauthorizedAccessException("You do not have permission to manage the Unit.");
+            }
+            if (dto == null) return;
+            string currentUserName = _userContext.GetName();
+            if (dto.UnitId == 0)
+            {
+                var Unit = _mapper.Map<Unit>(dto);
+                Unit.IsActive = true;
+                Unit.CreatedBy = currentUserName;
+                Unit.CreatedDate = DateTime.Now;
+
+                var maxOrder = await _unitRepository.GetMaxOrderIndex(dto.CourseId);
+                Unit.OrderIndex = maxOrder + 1;
+
+                await _unitRepository.AddUnit(Unit);
+            }
+            else
+            {
+                var Unit = await _unitRepository.GetUnitById(dto.UnitId);
+
+                if (Unit != null)
+                {
+                    
+                    if (!string.IsNullOrEmpty(Unit.VideoUrl) && Unit.VideoUrl != dto.VideoUrl)
+                    {
+                        var oldFileName = Path.GetFileName(Unit.VideoUrl);
+                        var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos", oldFileName);
+
+                        if (File.Exists(oldFilePath))
+                        {
+                            File.Delete(oldFilePath);
+                        }
+                    }
+
+                    dto.OrderIndex = Unit.OrderIndex;
+                    dto.CourseId = Unit.CourseId;
+
+                    _mapper.Map(dto, Unit);
+
+                    await _unitRepository.UpdateUnit(Unit);
+                }
             }
 
-            foreach (var dto in list.Where(x => !x.IsDelete))
+            await _unitRepository.SaveUnit();
+        }
+        /*
+         * xóa danh sách Unit và file video liên quan
+         * 
+         * thuphuong21072004
+         */
+        public async Task DeleteUnits(List<int> UnitIds)
+        {
+            if (!ValidateAdmin() )
             {
-                if (dto.LessonId == 0)
+                throw new UnauthorizedAccessException("You do not have the right to delete lessons.");
+            }
+            if (UnitIds == null || !UnitIds.Any()) return;
+
+            var Units = await _unitRepository.GetUnitsByIds(UnitIds);
+
+            foreach (var Unit in Units)
+            {
+                if (!string.IsNullOrEmpty(Unit.VideoUrl))
                 {
-                    var lesson = _mapper.Map<Lesson>(dto);
-                    lesson.IsActive = true;
+                    var fileName = Path.GetFileName(Unit.VideoUrl);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos", fileName);
 
-                    var maxOrder = await _lessonRepository.GetMaxOrderIndex(dto.CourseId);
-                    lesson.OrderIndex = maxOrder + 1;
-
-                    await _lessonRepository.Add(lesson);
-                }
-                else
-                {
-                    var lesson = await _lessonRepository.GetById(dto.LessonId);
-
-                    if (lesson != null)
+                    if (File.Exists(filePath))
                     {
-                        dto.OrderIndex = lesson.OrderIndex;
-                        dto.CourseId = lesson.CourseId;
-
-                        _mapper.Map(dto, lesson);
-
-                        await _lessonRepository.Update(lesson);
+                        File.Delete(filePath);
                     }
                 }
             }
 
-            await _lessonRepository.Save();
+            await _unitRepository.DeleteUnits(UnitIds);
+            await _unitRepository.SaveUnit();
         }
-
-        // User Lesson//
+        // User Unit//
         /*
          * mở khóa bài học đầu tiên cho user khi họ bắt đầu học (lần đầu tiên)
          * 
          * thuphuong21072004
          */
-        private async Task UnlockFirstLesson(int userId)
+        private async Task UnlockFirstUnit(int userId)
         {
             var hasLevel = await _progressRepository.HasUserLevel(userId);
             var hasCourse = await _progressRepository.HasUserCourse(userId);
-            var hasLesson = await _progressRepository.HasUserLesson(userId);
+            var hasUnit = await _progressRepository.HasUserUnit(userId);
 
-            var firstLevel = (await _levelRepository.GetLevels())
-                .OrderBy(x => x.OrderIndex)
-                .FirstOrDefault();
+            var firstLevel = (await _levelRepository.GetAllLevels(true))
+    .OrderBy(x => x.OrderIndex)
+    .FirstOrDefault();
 
             if (firstLevel == null) return;
 
-            var firstCourse = (await _courseRepository.GetCourses(firstLevel.LevelId))
-                .FirstOrDefault();
+            var firstCourse = (await _courseRepository.GetAllCourses(firstLevel.LevelId, true))
+    .FirstOrDefault();
 
             if (firstCourse == null) return;
 
-            var firstLesson = (await _lessonRepository.GetLessons(firstCourse.CourseId))
-                .FirstOrDefault();
+            var firstUnit = (await _unitRepository.GetAllUnits(firstCourse.CourseId, true))
+     .FirstOrDefault();
 
-            if (firstLesson == null) return;
+            if (firstUnit == null) return;
 
             if (!hasLevel)
             {
@@ -288,12 +418,12 @@ namespace Backend.Services.impl
                 });
             }
 
-            if (!hasLesson)
+            if (!hasUnit)
             {
                 await _progressRepository.AddUserProgress(new UserProgress
                 {
                     UserId = userId,
-                    LessonId = firstLesson.LessonId,
+                    UnitId = firstUnit.UnitId,
                     AssignedDate = DateTime.Now,
                     Status = false
                 });
@@ -310,12 +440,12 @@ namespace Backend.Services.impl
         {
             var userId = _userContext.GetUserId();
 
-            await UnlockFirstLesson(userId);
+            await UnlockFirstUnit(userId);
 
             var currentLevel = await _progressRepository.GetCurrentLevel(userId);
             var currentCourse = await _progressRepository.GetCurrentCourse(userId);
 
-            var levels = await _levelRepository.GetLevels() ?? new List<Level>();
+            var levels = await _levelRepository.GetAllLevels(true) ?? new List<Level>();
             var result = new List<LevelDTO>();
 
             foreach (var level in levels)
@@ -337,7 +467,7 @@ namespace Backend.Services.impl
 
                 if (currentLevel != null && level.LevelId == currentLevel.LevelId)
                 {
-                    var courses = await _courseRepository.GetCourses(level.LevelId)
+                    var courses = await _courseRepository.GetAllCourses(level.LevelId,true)
                                   ?? new List<Course>();
 
                     foreach (var course in courses)
@@ -355,35 +485,34 @@ namespace Backend.Services.impl
                             OrderIndex = course.OrderIndex,
                             IsActive = course.IsActive,
                             Status = uc?.Status, 
-                            Lessons = new List<LessonDTO>()
+                            Units = new List<UnitDTO>()
                         };
 
                         if (currentCourse != null && course.CourseId == currentCourse.CourseId)
                         {
-                            var lessons = await _lessonRepository.GetLessons(course.CourseId)
-                                          ?? new List<Lesson>();
+                            var Units = await _unitRepository.GetAllUnits(course.CourseId, true) ?? new List<Unit>();
 
-                            var userLessons = await _progressRepository.GetUserLessons(userId, course.CourseId)
+                            var userUnits = await _progressRepository.GetUserUnits(userId, course.CourseId)
                                               ?? new List<UserProgress>();
 
-                            foreach (var lesson in lessons)
+                            foreach (var Unit in Units)
                             {
-                                if (lesson == null) continue;
+                                if (Unit == null) continue;
 
-                                var ulp = userLessons.FirstOrDefault(x => x.LessonId == lesson.LessonId);
+                                var ulp = userUnits.FirstOrDefault(x => x.UnitId == Unit.UnitId);
 
-                                var lessonDTO = new LessonDTO
+                                var UnitDTO = new UnitDTO
                                 {
-                                    LessonId = lesson.LessonId,
-                                    CourseId = lesson.CourseId,
-                                    LessonName = lesson.LessonName,
-                                    VideoUrl = lesson.VideoUrl,
-                                    Duration = lesson.Duration,
-                                    OrderIndex = lesson.OrderIndex,
+                                    UnitId = Unit.UnitId,
+                                    CourseId = Unit.CourseId,
+                                    UnitName = Unit.UnitName,
+                                    VideoUrl = Unit.VideoUrl,
+                                    Duration = Unit.Duration,
+                                    OrderIndex = Unit.OrderIndex,
                                     Status = ulp?.Status 
                                 };
 
-                                courseDTO.Lessons.Add(lessonDTO);
+                                courseDTO.Units.Add(UnitDTO);
                             }
                         }
 
@@ -397,75 +526,46 @@ namespace Backend.Services.impl
             return result;
         }
         /*
-         * lấy tất cả danh sách level, course, lesson
-         * 
+         * lấy tất cả danh sách level, course, Unit
+         * O(1)
          * thuphuong21072004
          */
         public async Task<List<LevelDTO>> GetAllLearningPath()
         {
-            var levels = await _levelRepository.GetLevels();
-            var result = new List<LevelDTO>();
+            
+            var levels = await _levelRepository.GetQueryable() 
+                .Include(l => l.Courses.Where(c => c.IsActive))
+                .ThenInclude(c => c.Units.Where(u => u.IsActive))
+                .Where(l => l.IsActive)
+                .OrderBy(l => l.OrderIndex)
+                .ToListAsync();
 
-            foreach (var level in levels)
-            {
-                var levelDTO = new LevelDTO
-                {
-                    LevelId = level.LevelId,
-                    LevelName = level.LevelName,
-                    Description = level.Description,
-                    OrderIndex = level.OrderIndex,
-                    IsActive = level.IsActive,
-                    Courses = new List<CourseDTO>()
-                };
-
-                var courses = await _courseRepository.GetCourses(level.LevelId);
-
-                foreach (var course in courses)
-                {
-                    var courseDTO = new CourseDTO
-                    {
-                        CourseId = course.CourseId,
-                        LevelId = course.LevelId,
-                        CourseName = course.CourseName,
-                        Description = course.Description,
-                        OrderIndex = course.OrderIndex,
-                        IsActive = course.IsActive,
-                        Lessons = new List<LessonDTO>()
-                    };
-
-                    var lessons = await _lessonRepository.GetLessons(course.CourseId);
-
-                    foreach (var lesson in lessons)
-                    {
-                        courseDTO.Lessons.Add(new LessonDTO
-                        {
-                            LessonId = lesson.LessonId,
-                            CourseId = lesson.CourseId,
-                            LessonName = lesson.LessonName,
-                            VideoUrl = lesson.VideoUrl,
-                            Duration = lesson.Duration,
-                            OrderIndex = lesson.OrderIndex,
-                        });
-                    }
-
-                    levelDTO.Courses.Add(courseDTO);
-                }
-
-                result.Add(levelDTO);
-            }
-
-            return result;
+            return _mapper.Map<List<LevelDTO>>(levels);
         }
 
         //User Question//
+        private void DeleteMediaFile(string url, string folder)
+        {
+            if (string.IsNullOrEmpty(url)) return;
+
+            var fileName = Path.GetFileName(url);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folder, fileName);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+        }
         /*
-         * lấy quiz theo lesson đang học
+         * lấy quiz theo Unit đang học
          * 
          * thuphuong21072004
          */
-        public async Task<QuizDTO> GetQuizByLesson(int lessonId)
+        public async Task<QuizDTO> GetQuizByUnit(int UnitId)
         {
-            var quiz = await _quizRepository.GetQuizByLesson(lessonId);
+            int userId = _userContext.GetUserId();
+            
+            var quiz = await _quizRepository.GetQuizByUnit(UnitId);
             if (quiz == null) return null;
 
             var quizDTO = _mapper.Map<QuizDTO>(quiz);
@@ -486,19 +586,19 @@ namespace Backend.Services.impl
             return quizDTO;
         }
         /*
-         * mở level tiếp theo
+         * mở level tiếp theo khi user hoàn thành toàn bộ course của level hiện tại
          * 
          * thuphuong21072004
          */
-        public async Task UnlockNextLevel(int lessonId)
+        public async Task UnlockNextLevel(int UnitId)
         {
             int userId = _userContext.GetUserId();
 
-            var lesson = await _lessonRepository.GetById(lessonId);
-            var course = await _courseRepository.GetById(lesson.CourseId);
+            var Unit = await _unitRepository.GetUnitById(UnitId);
+            var course = await _courseRepository.GetCourseById(Unit.CourseId);
             var level = await _levelRepository.GetLevelById(course.LevelId);
 
-            var courses = await _courseRepository.GetCourses(level.LevelId);
+            var courses = await _courseRepository.GetAllCourses(level.LevelId,true);
             var userCourses = await _progressRepository.GetUserCourses(userId, level.LevelId);
 
             bool allCompleted = courses.All(c =>
@@ -506,12 +606,12 @@ namespace Backend.Services.impl
 
             if (!allCompleted) return;
 
-            var userLevel = await _progressRepository.GetUserLevelByLevelId(userId, level.LevelId);
+            var userLevel = await _progressRepository.GetUserLevel(userId, level.LevelId);
             userLevel.Status = true;
             userLevel.CompletedDate = DateTime.Now;
 
-            var nextLevel = (await _levelRepository.GetLevels())
-                .FirstOrDefault(x => x.OrderIndex == level.OrderIndex + 1);
+            var nextLevel = (await _levelRepository.GetAllLevels(true))
+    .FirstOrDefault(x => x.OrderIndex == level.OrderIndex + 1);
 
             if (nextLevel != null)
             {
@@ -523,9 +623,9 @@ namespace Backend.Services.impl
                     Status = false
                 });
 
-                var firstCourse = (await _courseRepository.GetCourses(nextLevel.LevelId))
-                    .OrderBy(x => x.OrderIndex)
-                    .FirstOrDefault();
+                var firstCourse = (await _courseRepository.GetAllCourses(nextLevel.LevelId, true))
+    .OrderBy(x => x.OrderIndex)
+    .FirstOrDefault();
 
                 await _progressRepository.AddUserCourse(new UserCourse
                 {
@@ -535,14 +635,14 @@ namespace Backend.Services.impl
                     Status = false
                 });
 
-                var firstLesson = (await _lessonRepository.GetLessons(firstCourse.CourseId))
+                var firstUnit = (await _unitRepository.GetAllUnits(firstCourse.CourseId,true))
                     .OrderBy(x => x.OrderIndex)
                     .FirstOrDefault();
 
                 await _progressRepository.AddUserProgress(new UserProgress
                 {
                     UserId = userId,
-                    LessonId = firstLesson.LessonId,
+                    UnitId = firstUnit.UnitId,
                     AssignedDate = DateTime.Now,
                     Status = false
                 });
@@ -551,22 +651,22 @@ namespace Backend.Services.impl
             await _progressRepository.Save();
         }
         /*
-         * mở course tiếp theo
+         * mở course tiếp theo khi hoàn thành toàn bộ Unit của course hiện tại
          * 
          * thuphuong21072004
          */
-        public async Task UnlockNextCourse(int lessonId)
+        public async Task UnlockNextCourse(int UnitId)
         {
             int userId = _userContext.GetUserId();
 
-            var lesson = await _lessonRepository.GetById(lessonId);
-            var course = await _courseRepository.GetById(lesson.CourseId);
+            var Unit = await _unitRepository.GetUnitById(UnitId);
+            var course = await _courseRepository.GetCourseById(Unit.CourseId);
 
-            var lessons = await _lessonRepository.GetLessons(course.CourseId);
-            var progress = await _progressRepository.GetUserLessons(userId, course.CourseId);
+            var Units = await _unitRepository.GetAllUnits(course.CourseId,true);
+            var progress = await _progressRepository.GetUserUnits(userId, course.CourseId);
 
-            bool allCompleted = lessons.All(l =>
-                progress.Any(p => p.LessonId == l.LessonId && p.Status == true));
+            bool allCompleted = Units.All(l =>
+                progress.Any(p => p.UnitId == l.UnitId && p.Status == true));
 
             if (!allCompleted) return;
 
@@ -574,7 +674,7 @@ namespace Backend.Services.impl
             userCourse.Status = true;
             userCourse.CompletedDate = DateTime.Now;
 
-            var nextCourse = (await _courseRepository.GetCourses(course.LevelId))
+            var nextCourse = (await _courseRepository.GetAllCourses(course.LevelId, true))
                 .OrderBy(c => c.OrderIndex)
                 .FirstOrDefault(c => c.OrderIndex > course.OrderIndex);
 
@@ -588,54 +688,54 @@ namespace Backend.Services.impl
                     Status = false
                 });
 
-                var firstLesson = (await _lessonRepository.GetLessons(nextCourse.CourseId))
+                var firstUnit = (await _unitRepository.GetAllUnits(nextCourse.CourseId,true))
                     .OrderBy(x => x.OrderIndex)
                     .FirstOrDefault();
 
                 await _progressRepository.AddUserProgress(new UserProgress
                 {
                     UserId = userId,
-                    LessonId = firstLesson.LessonId,
+                    UnitId = firstUnit.UnitId,
                     AssignedDate = DateTime.Now,
                     Status = false
                 });
             }
             else
             {
-                await UnlockNextLevel(lessonId);
+                await UnlockNextLevel(UnitId);
             }
 
             await _progressRepository.Save();
         }
         /*
-         * mở khóa lesson tiếp theo 
+         * mở khóa Unit tiếp theo sau khi hoàn thành Unit hiện tại
          * 
          * thuphuong21072004
          */
-        public async Task UnlockNextLesson(int lessonId)
+        public async Task UnlockNextUnit(int UnitId)
         {
             int userId = _userContext.GetUserId();
 
-            var lesson = await _lessonRepository.GetById(lessonId);
+            var Unit = await _unitRepository.GetUnitById(UnitId);
 
-            var progress = await _progressRepository.GetUserLessonByLessonId(userId, lessonId);
+            var progress = await _progressRepository.GetUserUnitByUnitId(userId, UnitId);
             progress.Status = true;
             progress.CompletedDate = DateTime.Now;
 
-            var lessons = await _lessonRepository.GetLessons(lesson.CourseId);
+            var Units = await _unitRepository.GetAllUnits(Unit.CourseId,true);
 
-            var nextLesson = lessons
-                .FirstOrDefault(x => x.OrderIndex == lesson.OrderIndex + 1);
+            var nextUnit = Units
+                .FirstOrDefault(x => x.OrderIndex == Unit.OrderIndex + 1);
 
-            if (nextLesson != null)
+            if (nextUnit != null)
             {
-                var exist = await _progressRepository.GetUserLessonByLessonId(userId, nextLesson.LessonId);
+                var exist = await _progressRepository.GetUserUnitByUnitId(userId, nextUnit.UnitId);
                 if (exist == null)
                 {
                     await _progressRepository.AddUserProgress(new UserProgress
                     {
                         UserId = userId,
-                        LessonId = nextLesson.LessonId,
+                        UnitId = nextUnit.UnitId,
                         AssignedDate = DateTime.Now,
                         Status = false
                     });
@@ -643,23 +743,28 @@ namespace Backend.Services.impl
             }
             else
             {
-                await UnlockNextCourse(lessonId);
+                await UnlockNextCourse(UnitId);
             }
 
             await _progressRepository.Save();
         }
         /*
-         * chấm điểm -> đậu/rớt
+         * chấm điểm quiz, lưu kết quả và mở khóa bài học tiếp theo nếu đạt
          * 
          * thuphuong21072004
          */
         public async Task SubmitQuiz(int quizId, List<int> answerIds)
         {
+            if (!ValidateUser())
+            {
+                throw new UnauthorizedAccessException("Only students are allowed to submit assignments.");
+            }
             int userId = _userContext.GetUserId();
 
             var questions = await _quizRepository.GetAllQuestions(quizId);
 
             int total = questions.Count;
+            if (total == 0) throw new Exception("The test currently has no questions.");
             int correct = 0;
 
             foreach (var q in questions)
@@ -689,11 +794,20 @@ namespace Backend.Services.impl
 
             if (isPassed)
             {
-                var lesson = await _quizRepository.GetLessonByQuizId(quizId);
-                await UnlockNextLesson(lesson.LessonId);
+                var Unit = await _quizRepository.GetUnitByQuizId(quizId);
+                await UnlockNextUnit(Unit.UnitId);
             }
         }
-
+        /*
+         * xem điểm
+         * 
+         * thupuong21072004
+         */
+        public async Task<UserQuiz?> GetMyQuizResult(int quizId)
+        {
+            int userId = _userContext.GetUserId();
+            return await _quizRepository.GetUserQuiz(userId, quizId);
+        }
         /*
          * lưu câu trả lời của câu hỏi
          * 
@@ -703,15 +817,20 @@ namespace Backend.Services.impl
         {
             if (list == null) return;
 
-           
-            var deleteIds = list
-                .Where(x => x.IsDelete && x.AnswerId != 0)
-                .Select(x => x.AnswerId)
-                .ToList();
-
-            if (deleteIds.Any())
+            var deleteItems = list.Where(x => x.IsDelete && x.AnswerId != 0).ToList();
+            foreach (var item in deleteItems)
             {
-                await _quizRepository.DeleteAnswers(deleteIds);
+                var oldAnswer = await _quizRepository.GetAnswerByIdAndQuestion(item.AnswerId, questionId);
+                if (oldAnswer != null)
+                {
+                    DeleteMediaFile(oldAnswer.ImageUrl, "images");
+                    DeleteMediaFile(oldAnswer.AudioUrl, "audios");
+                }
+            }
+
+            if (deleteItems.Any())
+            {
+                await _quizRepository.DeleteAnswers(deleteItems.Select(x => x.AnswerId).ToList());
             }
 
             foreach (var aDto in list.Where(x => !x.IsDelete))
@@ -722,18 +841,26 @@ namespace Backend.Services.impl
                     {
                         QuestionId = questionId,
                         AnswerText = aDto.AnswerText,
-                        IsCorrect = aDto.IsCorrect
+                        IsCorrect = aDto.IsCorrect,
+                        ImageUrl = aDto.ImageUrl,
+                        AudioUrl = aDto.AudioUrl
                     });
                 }
                 else
                 {
-                    var answer = await _quizRepository
-                        .GetAnswerByIdAndQuestion(aDto.AnswerId, questionId);
+                    var answer = await _quizRepository.GetAnswerByIdAndQuestion(aDto.AnswerId, questionId);
+                    if (answer != null)
+                    {
+                        if (answer.ImageUrl != aDto.ImageUrl) DeleteMediaFile(answer.ImageUrl, "images");
+                        if (answer.AudioUrl != aDto.AudioUrl) DeleteMediaFile(answer.AudioUrl, "audios");
 
-                    answer.AnswerText = aDto.AnswerText;
-                    answer.IsCorrect = aDto.IsCorrect;
+                        answer.AnswerText = aDto.AnswerText;
+                        answer.IsCorrect = aDto.IsCorrect;
+                        answer.ImageUrl = aDto.ImageUrl;
+                        answer.AudioUrl = aDto.AudioUrl;
 
-                    await _quizRepository.UpdateAnswer(answer);
+                        await _quizRepository.UpdateAnswer(answer);
+                    }
                 }
             }
         }
@@ -746,52 +873,72 @@ namespace Backend.Services.impl
         {
             if (list == null) return;
 
-            var deleteIds = list
-                .Where(x => x.IsDelete && x.QuestionId != 0)
-                .Select(x => x.QuestionId)
-                .ToList();
-
-            if (deleteIds.Any())
+            var deleteItems = list.Where(x => x.IsDelete && x.QuestionId != 0).ToList();
+            foreach (var item in deleteItems)
             {
-                await _quizRepository.DeleteQuestions(deleteIds);
+                var oldQ = await _quizRepository.GetQuestionByIdAndQuiz(item.QuestionId, quizId);
+                if (oldQ != null)
+                {
+                    DeleteMediaFile(oldQ.ImageUrl, "images");
+                    DeleteMediaFile(oldQ.AudioUrl, "audios");
+
+                    var answers = await _quizRepository.GetAllAnswers(oldQ.QuestionId);
+                    foreach (var ans in answers)
+                    {
+                        DeleteMediaFile(ans.ImageUrl, "images");
+                        DeleteMediaFile(ans.AudioUrl, "audios");
+                    }
+                }
             }
 
-            
+            if (deleteItems.Any())
+            {
+                await _quizRepository.DeleteQuestions(deleteItems.Select(x => x.QuestionId).ToList());
+            }
+
             foreach (var qDto in list.Where(x => !x.IsDelete))
             {
                 Question question;
-
                 if (qDto.QuestionId == 0)
                 {
                     question = new Question
                     {
                         QuizId = quizId,
-                        QuestionText = qDto.QuestionText
+                        QuestionText = qDto.QuestionText,
+                        ImageUrl = qDto.ImageUrl,
+                        AudioUrl = qDto.AudioUrl
                     };
-
                     await _quizRepository.AddQuestion(question);
-                    await _quizRepository.Save(); 
+                    await _quizRepository.Save();
                 }
                 else
                 {
-                    question = await _quizRepository
-                        .GetQuestionByIdAndQuiz(qDto.QuestionId, quizId);
+                    question = await _quizRepository.GetQuestionByIdAndQuiz(qDto.QuestionId, quizId);
+                    if (question != null)
+                    {
+                        if (question.ImageUrl != qDto.ImageUrl) DeleteMediaFile(question.ImageUrl, "images");
+                        if (question.AudioUrl != qDto.AudioUrl) DeleteMediaFile(question.AudioUrl, "audios");
 
-                    question.QuestionText = qDto.QuestionText;
-
-                    await _quizRepository.UpdateQuestion(question);
+                        question.QuestionText = qDto.QuestionText;
+                        question.ImageUrl = qDto.ImageUrl;
+                        question.AudioUrl = qDto.AudioUrl;
+                        await _quizRepository.UpdateQuestion(question);
+                    }
                 }
-
                 await SaveAnswers(question.QuestionId, qDto.Answers);
             }
         }
         /*
-         * lưu quiz và danh sách câu hỏi, câu trả lời
+         * thêm hoặc cập nhật quiz và toàn bộ câu hỏi, câu trả lời
          * 
          * thuphuong21072004
          */
         public async Task SaveQuiz(QuizDTO dto)
         {
+            if (!ValidateAdmin() && !ValidateModerator())
+            {
+                throw new UnauthorizedAccessException("You do not have permission to set up quizzes.");
+            }
             Quiz quiz;
 
             if (dto.QuizId == 0)
@@ -799,7 +946,7 @@ namespace Backend.Services.impl
                 
                 quiz = new Quiz
                 {
-                    LessonId = dto.LessonId,
+                    UnitId = dto.UnitId,
                     QuizName = dto.QuizName,
                     PassScore = dto.PassScore
                 };
@@ -830,7 +977,27 @@ namespace Backend.Services.impl
          */
         public async Task DeleteQuiz(int quizId)
         {
+            if (!ValidateAdmin())
+            {
+                throw new UnauthorizedAccessException("You do not have the right to delete the quiz.");
+            }
+
+            var questions = await _quizRepository.GetAllQuestions(quizId);
+            foreach (var q in questions)
+            {
+                DeleteMediaFile(q.ImageUrl, "images");
+                DeleteMediaFile(q.AudioUrl, "audios");
+
+                var answers = await _quizRepository.GetAllAnswers(q.QuestionId);
+                foreach (var a in answers)
+                {
+                    DeleteMediaFile(a.ImageUrl, "images");
+                    DeleteMediaFile(a.AudioUrl, "audios");
+                }
+            }
+
             await _quizRepository.DeleteQuiz(quizId);
+            await _quizRepository.Save();
         }
     }
 }

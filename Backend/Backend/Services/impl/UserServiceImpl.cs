@@ -11,109 +11,120 @@ namespace Backend.Services.impl
         private readonly UserRepository _userrepository;
 
         private readonly JwtService _jwtService;
+        private readonly UserContextUtil _userContext;
 
-        public UserServiceImpl(UserRepository userrepository, JwtService jwtService)
+        public UserServiceImpl(UserRepository userrepository, JwtService jwtService, UserContextUtil userContext)
         {
             _userrepository = userrepository;
             _jwtService = jwtService;
+            _userContext = userContext;
+        }
+        // validate
+        /*
+         * kiểm tra quyền là admin
+         * 
+         * thuphuong21072004
+         */
+        private bool ValidateAdmin()
+        {
+            string role = _userContext.GetRole();
+            if (role == common.Constant.Role.Admin)
+            {
+                return true;
+            }
+            return false;
         }
         /*
-         * đăng nhập thông tin 
+         * kiem tra quyen user
+         * 
+         * thuphuong21072004
+         */
+        private bool ValidateUser()
+        {
+            string role = _userContext.GetRole();
+            if (role == common.Constant.Role.User) { return true; }
+            return false;
+        }
+        /*
+         * kiêm tra cong tac vien
+         * 
+         * thuphuong21072004
+         */
+        private bool ValidateModerator()
+        {
+            string role = _userContext.GetRole();
+            if (role == common.Constant.Role.Moderator) { return true; }
+            return false;
+        }
+        /*
+         * xác thực đăng nhập và tạo token cho user 
          * 08/03/2026
          * thuphuong21072004
          */
         public async Task<object> Login(LoginDTO request)
         {
-            var user = await _userrepository.Login(request.Email, request.Password);
+            
+            var userData = await _userrepository.GetUserWithRole(request.Email);
 
-            if (user == null)
-                throw new Exception("Invalid email or password");
+            if (userData == null) return null;
 
-            if (user.Status != 1)
-                throw new Exception("Tài khoản bị khóa");
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, (string)userData.Password);
+
+            if (!isPasswordValid) return null;
 
             var userDto = new UserDTO
             {
-                Id = user.UserId,
-                Email = user.Email,
-                RoleId = user.RoleId,
-                Status = user.Status,
-                Name = user.Name
+                Id = userData.UserId,
+                Name = userData.Name,
+                Email = userData.Email
             };
 
-            var token = _jwtService.GenerateToken(userDto);
-
-            return new
-            {
-                token = token,
-            };
+            return new { token = _jwtService.GenerateToken(userDto, (string)userData.RoleName) };
         }
         /*
-         * đăng ký tài khoản
+         * ăng ký tài khoản mới và tạo token cho user
          * 08/03/2026
          * thuphuong21072004
          */
         public async Task<object> Register(RegisterDTO request)
         {
-            if (string.IsNullOrWhiteSpace(request.Email) ||
-                string.IsNullOrWhiteSpace(request.Password) || string.IsNullOrWhiteSpace(request.Name))
-            {
-                throw new Exception("Dữ liệu không hợp lệ");
-            }
-
             var email = request.Email.Trim().ToLower();
 
             var isExist = await _userrepository.IsEmailExist(email);
-            if (isExist)
-                throw new Exception("Email đã tồn tại");
+            if (isExist) throw new Exception("Email already exists");
+
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             var user = await _userrepository.Register(
                 request.Name,
                 email,
-                request.Password
+                hashedPassword
             );
-            var userDto = new UserDTO
-            {
-                Id = user.UserId,
-                Email = user.Email,
-                Name = user.Name,
-                RoleId = 2,
-                Status = user.Status
-            };
-            var token = _jwtService.GenerateToken(userDto);
-            return new
-            {
-                token = token
-            };
+
+            var userDto = new UserDTO { Id = user.UserId, Email = user.Email, Name = user.Name, RoleId = user.RoleId };
+
+            return new { token = _jwtService.GenerateToken(userDto, "User") };
         }
         /*
-         * đổi mật khẩu tài khoản
+         * đổi mật khẩu cho user (kiểm tra mật khẩu cũ và validate)
          * 08/03/2026
          * thuphuong21072004
          */
         public async Task ChangePassword(int userId, ChangePasswordDTO dto)
         {
-
-            if (string.IsNullOrEmpty(dto.OldPassword) || string.IsNullOrEmpty(dto.NewPassword))
-                throw new Exception("Password cannot be empty");
-
             var user = await _userrepository.GetUserById(userId);
-            if (user == null)
-                throw new Exception("User not found");
+            if (user == null) throw new Exception("User not found");
 
-            if (user.Password != dto.OldPassword)
-                throw new Exception("Old password is incorrect");
+            if (!BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.Password))
+                throw new Exception("The old password is incorrect.");
 
-            if (dto.OldPassword == dto.NewPassword)
-                throw new Exception("New password must be different");
-
-            user.Password = dto.NewPassword;
+            user.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
 
             await _userrepository.Update(user);
             await _userrepository.Save();
         }
         /*
-         * cập nhập thông tin các nhân
+         * cập nhật thông tin cá nhân
          * 
          * thuphuong21072004
          */
@@ -139,7 +150,7 @@ namespace Backend.Services.impl
         /*
          * lấy danh sách người dùng theo trạng thái, email, quyền
          * 
-         * thuphuong221072004
+         * thuphuong21072004
          */
         public async Task<object> GetUsers(string? email, int? status, int? roleId, int page, int pageSize)
         {
@@ -155,12 +166,16 @@ namespace Backend.Services.impl
             };
         }
         /*
-         * cập nhật trạng thái người dùng
+         * cập nhật trạng thái tài khoản người dùng
          * 
          * thuphuong21072004
          */
         public async Task UpdateUserStatus(int userId, int status)
         {
+            if (!ValidateAdmin() )
+            {
+                throw new UnauthorizedAccessException("You do not have permission to edit the status.");
+            }
             var user = await _userrepository.GetUserById(userId);
 
             if (user == null)
@@ -181,6 +196,10 @@ namespace Backend.Services.impl
          */
         public async Task UpdateUserRole(int userId, UserDTO dto)
         {
+            if (!ValidateAdmin() )
+            {
+                throw new UnauthorizedAccessException("You do not have the authority to change user permissions.");
+            }
             var user = await _userrepository.GetUserById(userId);
 
             if (user == null)
@@ -190,5 +209,6 @@ namespace Backend.Services.impl
             await _userrepository.Update(user);
             await _userrepository.Save();
         }
+   
     }
 }

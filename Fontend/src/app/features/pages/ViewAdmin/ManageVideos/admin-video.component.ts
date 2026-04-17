@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { BaseService } from '../../../services/base.service';
 
 @Component({
   selector: 'app-admin-video',
@@ -13,8 +14,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   styleUrls: ['./admin-video.component.css'],
 })
 export class AdminVideoComponent implements OnInit {
-  videos: any[] = [];
-  selectedVideo: any;
+  videos: Video[] = [];
+  selectedVideo: Video | null = null;
 
   page = 1;
   pageSize = 10;
@@ -29,6 +30,7 @@ export class AdminVideoComponent implements OnInit {
   constructor(
     private videoService: VideoService,
     private sanitizer: DomSanitizer,
+    private baseService: BaseService,
   ) {}
 
   ngOnInit(): void {
@@ -42,17 +44,21 @@ export class AdminVideoComponent implements OnInit {
 
     this.videoService
       .listVideo(this.status ?? undefined, this.page, this.pageSize)
-      .subscribe((res: any) => {
-        this.videos = res.data ? res.data : res;
-        this.total = res.total;
+      .subscribe({
+        next: (res: any) => {
+          this.videos = res?.data || res || [];
+          this.total = res?.total || 0;
 
-        if (this.videos.length > 0) {
-          this.selectVideo(this.videos[0]);
-        }
+          if (this.videos && this.videos.length > 0) {
+            this.selectVideo(this.videos[0]);
+          }
+        },
+        error: (err) =>
+          this.baseService.handleError(err, 'Video list loading error'),
       });
   }
 
-  selectVideo(video: any) {
+  selectVideo(video: Video) {
     this.selectedVideo = video;
 
     this.currentVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -75,13 +81,11 @@ export class AdminVideoComponent implements OnInit {
 
     this.videoService.insertVideo(this.youtubeId).subscribe({
       next: () => {
-        alert('Import successful');
+        alert('Imported video successfully');
         this.youtubeId = '';
         this.loadVideos();
       },
-      error: () => {
-        alert('Import failed');
-      },
+      error: (err) => this.baseService.handleError(err, 'Video import failed'),
     });
   }
 
@@ -96,36 +100,31 @@ export class AdminVideoComponent implements OnInit {
         this.videos = [video];
         this.selectVideo(video);
       },
-      error: () => {
-        alert('Video not found');
-      },
+      error: (err) => this.baseService.handleError(err, 'Video not found'),
     });
   }
 
   updateStatus(videoId: any, status: any) {
     if (videoId === undefined || videoId === null) {
       alert('videoId is undefined');
-      console.log('Video object:', videoId);
       return;
     }
 
     const id = Number(videoId);
     const s = Number(status);
-    this.videoService.updateVideo(id, s).subscribe({
+
+    this.videoService.updateVideo(videoId, status).subscribe({
       next: () => {
-        alert('Update status successful');
+        alert('Status update successful');
         this.loadVideos();
       },
-      error: (err) => {
-        console.log(err);
-        alert('Update failed');
-      },
+      error: (err) => this.baseService.handleError(err, 'Status update error'),
     });
   }
 
   nextPage() {
-      this.page++;
-      this.loadVideos();
+    this.page++;
+    this.loadVideos();
   }
 
   prevPage() {

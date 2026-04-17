@@ -15,7 +15,7 @@ namespace Backend.Controllers
             _videoService = videoService;
         }
         /*
-         * tìm kiếm video theo từ khóa
+         * tìm kiếm video theo từ khóa trong transcript (phân trang)
          * 07/03/2025
          * thuphuong21072004
          */
@@ -37,11 +37,10 @@ namespace Backend.Controllers
         public async Task<IActionResult> ImportVideo([FromBody] VideoDTO request)
         {
             await _videoService.ImportVideo(request.YoutubeId);
-
             return Ok("Video imported successfully");
         }
         /*
-         * trả danh sách video theo trạng thái
+         * lấy danh sách video theo trạng thái (phân trang)
          * 14/03/2025
          * thuphuong21072004
          */
@@ -60,21 +59,16 @@ namespace Backend.Controllers
          * 14/03/2025
          * thuphuong21072004
          */
+       
+        [Authorize]
         [HttpPut("updateVideo")]
         public async Task<IActionResult> UpdateVideo([FromQuery] int videoId, [FromQuery] int status)
         {
-            try
-            {
-                await _videoService.updateVideo(videoId, status);
-                return Ok("Video updated successfully");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _videoService.updateVideo(videoId, status);
+            return Ok("Video updated successfully");
         }
         /*
-         * tìm kiếm video qua youtubeId
+         * lấy thông tin video theo youtubeId
          * 18/03/2026
          * thuphuong21072004
          */

@@ -6,8 +6,13 @@ import { RegisterComponent } from './features/pages/ViewUser/register/register.c
 import { ProfileComponent } from './features/pages/profile/profile.component';
 import { AdminUserComponent } from './features/pages/ViewAdmin/ManageUsers/admin-user.component';
 import { AdminVideoComponent } from './features/pages/ViewAdmin/ManageVideos/admin-video.component';
-import { LearningAdminComponent } from './features/pages/ViewAdmin/ManageLessons/admin-lessons.component';
-import { UserLearningComponent } from './features/pages/ViewUser/courses/user-lessons.component';
+import { LevelComponent } from './features/pages/ViewAdmin/Learning/adminLevel/level.component';
+import { CourseComponent } from './features/pages/ViewAdmin/Learning/adminCourse/course.component';
+import { UnitComponent } from './features/pages/ViewAdmin/Learning/adminUnit/unit.component';
+import { UnitDetailComponent} from './features/pages/ViewAdmin/Learning/adminUnitDetail/unit-detail.component';
+
+import { MyProgressComponent } from './features/pages/ViewUser/Learning/unit/unit.component';
+import { QuizLearnComponent } from './features/pages/ViewUser/Learning/quiz/quiz.component';
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
@@ -16,9 +21,13 @@ export const routes: Routes = [
 
   { path: 'admin/users', component: AdminUserComponent },
   { path: 'admin/videos', component: AdminVideoComponent },
-  { path: 'admin/lessons', component: LearningAdminComponent },
+  { path: 'admin/levels', component: LevelComponent },
+  { path: 'admin/courses', component: CourseComponent },
+  { path: 'admin/units', component: UnitComponent },
+  { path: 'admin/unitDetail', component: UnitDetailComponent },
 
-  { path: 'user/lessons', component: UserLearningComponent },
+  { path: 'user/units', component: MyProgressComponent },
   { path: 'user/search', component: SearchComponent },
   { path: 'user/register', component: RegisterComponent },
+  { path: 'unit', component: QuizLearnComponent },
 ];

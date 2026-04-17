@@ -4,12 +4,13 @@ namespace Backend.Repository
 {
     public interface LevelRepository
     {
-        Task<List<Level>> GetLevels();
+        Task<List<Level>> GetAllLevels(bool? isActive);
         Task<Level> GetLevelById(int id);
         Task AddLevel(Level level);
         Task UpdateLevel(Level level);
         Task DeleteLevels(List<int> ids);
-        Task Save();
+        Task SaveLevel();
         Task<int> GetMaxOrderIndex();
+        IQueryable<Level> GetQueryable();
     }
 }

@@ -1,0 +1,89 @@
+.level-container,
+.course-container,
+.unit-container {
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    padding: 8px;
+    font-size: 14px;
+    border-bottom: 2px solid #ddd;
+    text-align: left;
+}
+
+td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+td input {
+    width: 220px;
+    padding: 4px 6px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+td input[type="checkbox"] {
+    display: block;
+    margin: 0 auto;
+    width: auto;
+    transform: scale(1.1);
+}
+
+button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #7b3fe4;
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+button:hover {
+    background: #5a2db5;
+}
+
+.save-btn {
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px;
+    font-weight: 600;
+    background: #5a2db5;
+}
+
+.add-row td {
+    text-align: center;
+}
+
+a {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    text-decoration: none;
+}
+.level-info {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f5f0ff;
+    border-radius: 10px;
+    border-left: 5px solid #7b5cff;
+}
+
+.level-info h2 {
+    margin: 0;
+    color: #5a3ec8;
+}
+
+.level-info p {
+    margin: 5px 0 0;
+    color: #555;
+}

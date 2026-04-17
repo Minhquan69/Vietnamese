@@ -1,0 +1,63 @@
+<div class="course-container">
+
+    <div class="level-info" *ngIf="level">
+        <h2>{{ level.levelName }}</h2>
+        <p>{{ level.description }}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Created By</th>
+                <th>Active</th>
+                <th>Delete</th>
+                <th>Select</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let course of courses; trackBy: trackById" [ngClass]="{ 'deleted-row': course.isDelete }">
+            
+                <td>
+                    <input [(ngModel)]="course.courseName" [disabled]="course.isDelete" />
+                </td>
+            
+                <td>
+                    <input [(ngModel)]="course.description" [disabled]="course.isDelete" />
+                </td>
+                <td>
+                    <span class="creator-text">{{ course.createdBy || 'N/A' }}</span>
+                </td>
+            
+                <td>
+                    <input type="checkbox" [(ngModel)]="course.isActive" [disabled]="course.isDelete" />
+                </td>
+            
+                <td>
+                    <input type="checkbox" [(ngModel)]="course.isDelete" />
+                </td>
+        
+                <td>
+                    <a [routerLink]="['/admin/units']" [queryParams]="{ courseId: course.courseId }">
+                        ➡
+                    </a>
+                </td>
+            
+            </tr>
+        
+            <tr class="add-row">
+                <td colspan="5">
+                    <button (click)="addCourse()">
+                        Add new row
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button class="save-btn" (click)="saveCourses()">Save All</button>
+
+</div>

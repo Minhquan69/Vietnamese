@@ -22,24 +22,36 @@ namespace Backend.Repository.impl
             return await _context.UserLevel
                 .FirstOrDefaultAsync(x => x.UserId == userId && x.LevelId == levelId);
         }
-
+        /*
+         * lấy course của user theo courseId
+         * 
+         * thuphuong21072004
+         */
         public async Task<UserCourse?> GetUserCourseByCourseId(int userId, int courseId)
         {
             return await _context.UserCourse
                 .FirstOrDefaultAsync(x => x.UserId == userId && x.CourseId == courseId);
         }
-
-        public async Task<List<UserProgress>> GetUserLessons(int userId, int courseId)
+        /*
+         * lấy danh sách Unit (progress) của user theo course
+         * 
+         * thuphuong21072004
+         */
+        public async Task<List<UserProgress>> GetUserUnits(int userId, int courseId)
         {
             return await _context.UserProgress
                 .Where(x => x.UserId == userId &&
-                            _context.Lessons
+                            _context.Units
                                 .Where(l => l.CourseId == courseId)
-                                .Select(l => l.LessonId)
-                                .Contains(x.LessonId))
+                                .Select(l => l.UnitId)
+                                .Contains(x.UnitId))
                 .ToListAsync();
         }
-
+        /*
+         * lấy level hiện tại của user (chưa hoàn thành)
+         * 
+         * thuphuong21072004
+         */
         public async Task<UserLevel?> GetCurrentLevel(int userId)
         {
             return await _context.UserLevel
@@ -47,6 +59,11 @@ namespace Backend.Repository.impl
                 .OrderBy(x => x.AssignedDate)
                 .FirstOrDefaultAsync();
         }
+        /*
+         * lấy course hiện tại của user (chưa hoàn thành)
+         * 
+         * thuphuong21072004
+         */
         public async Task<UserCourse?> GetCurrentCourse(int userId)
         {
             return await _context.UserCourse
@@ -54,33 +71,47 @@ namespace Backend.Repository.impl
                 .OrderBy(x => x.AssignedDate)
                 .FirstOrDefaultAsync();
         }
-
+        /*
+         * thêm level cho user
+         * 
+         * thuphuong21072004
+         */
         public async Task AddUserLevel(UserLevel userLevel)
         {
             await _context.UserLevel.AddAsync(userLevel);
         }
-
+        /*
+         * thêm course cho user
+         * 
+         * thuphuong21072004
+         */
         public async Task AddUserCourse(UserCourse userCourse)
         {
             await _context.UserCourse.AddAsync(userCourse);
         }
-
+        /*
+         * thêm tiến trình học (Unit) cho user
+         * 
+         * thuphuong21072004
+         */
         public async Task AddUserProgress(UserProgress userProgress)
         {
             await _context.UserProgress.AddAsync(userProgress);
         }
-
+        /*
+         * lưu thay đổi vào database
+         * 
+         * thuphuong21072004
+         */
         public async Task Save()
         {
             await _context.SaveChangesAsync();
         }
-
-
-        public async Task<UserLevel?> GetUserLevelByLevelId(int userId, int levelId)
-        {
-            return await _context.UserLevel
-                .FirstOrDefaultAsync(x => x.UserId == userId && x.LevelId == levelId);
-        }
+        /*
+         * lấy danh sách course của user theo level
+         * 
+         * thuphuong21072004
+         */
         public async Task<List<UserCourse>> GetUserCourses(int userId, int levelId)
         {
             var courseIds = await _context.Courses
@@ -92,27 +123,45 @@ namespace Backend.Repository.impl
                 .Where(x => x.UserId == userId && courseIds.Contains(x.CourseId))
                 .ToListAsync();
         }
-        public async Task<UserProgress?> GetUserLessonByLessonId(int userId, int lessonId)
+        /*
+         * lấy tiến trình Unit của user theo UnitId
+         * 
+         * thuphuong21072004
+         */
+        public async Task<UserProgress?> GetUserUnitByUnitId(int userId, int UnitId)
         {
             return await _context.UserProgress
-                .FirstOrDefaultAsync(x => x.UserId == userId && x.LessonId == lessonId);
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.UnitId == UnitId);
         }
 
-
+        /*
+         * kiểm tra user đã có level hay chưa
+         * 
+         * thuphuong21072004
+         */
         public async Task<bool> HasUserLevel(int userId)
         {
             return await _context.UserLevel.AnyAsync(x => x.UserId == userId);
         }
-
+        /*
+         * kiểm tra user đã có course hay chưa
+         * 
+         * thuphuong21072004
+         */
         public async Task<bool> HasUserCourse(int userId)
         {
             return await _context.UserCourse.AnyAsync(x => x.UserId == userId);
         }
-
-        public async Task<bool> HasUserLesson(int userId)
+        /*
+         * kiểm tra user đã có Unit hay chưa
+         * 
+         * thuphuong21072004
+         */
+        public async Task<bool> HasUserUnit(int userId)
         {
             return await _context.UserProgress.AnyAsync(x => x.UserId == userId);
         }
+        
 
     }
 }

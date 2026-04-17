@@ -38,21 +38,17 @@
 
     <div class="video-list">
         <div class="video-item" *ngFor="let v of videos" (click)="selectVideo(v)">
-
-            <img [src]="v.thumbnail ? v.thumbnail : 'https://img.youtube.com/vi/' + v.youtubeId + '/0.jpg'">
-
+            <img [src]="v.thumbnail || 'https://img.youtube.com/vi/' + v.youtubeId + '/0.jpg'">
+    
             <div class="video-info">
                 <div class="video-title">{{v.title}}</div>
-
-                <div class="video-id">ID: {{v.id}}</div>
-
-                <select [ngModel]="v.status" (click)="$event.stopPropagation()" (ngModelChange)="updateStatus(v.videoId, $event)">
+                <div class="video-id">ID: {{v.id}}</div> <select [ngModel]="v.status" (click)="$event.stopPropagation()"
+                    (ngModelChange)="updateStatus(v.id, $event)">
                     <option [ngValue]="0">Pending</option>
                     <option [ngValue]="1">Approved</option>
-                    <option [ngValue]="2">Temporarily Locked</option>
+                    <option [ngValue]="2">Locked</option>
                 </select>
             </div>
-
         </div>
     </div>
 

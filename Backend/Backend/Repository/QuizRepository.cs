@@ -6,14 +6,15 @@ namespace Backend.Repository
     public interface QuizRepository
     {
         // UserQuiz
-        Task<Quiz> GetQuizByLesson(int lessonId);
+        Task<Quiz> GetQuizByUnit(int UnitId);
         Task<Answer> GetCorrectAnswer(int questionId);
-        Task<Lesson> GetLessonByQuizId(int quizId);
+        Task<Unit> GetUnitByQuizId(int quizId);
         
         Task SaveUserQuiz(UserQuiz userQuiz);
-     
+
+        Task<UserQuiz?> GetUserQuiz(int userId, int quizId);
         // Quiz
-       
+
         Task AddQuiz(Quiz quiz);
         Task UpdateQuiz(Quiz quiz);
         Task DeleteQuiz(int quizId);

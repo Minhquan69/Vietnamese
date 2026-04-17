@@ -1,15 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
-interface Course {
-  title: string;
-  description: string;
-}
-
-interface Feature {
-  title: string;
-  description: string;
-}
+import { RouterLink } from '@angular/router';
+import { LearningService } from '../../services/learning.service';
+import { LevelDTO } from '../../models/level.model';
 
 @Component({
   selector: 'app-home',
@@ -18,13 +11,14 @@ interface Feature {
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
+
   heroTitle = 'Learn Vietnamese with VietPhuong';
 
   heroDescription =
-    'Discover Vietnamese through interactive lessons, vocabulary practice and real-life conversations.';
+    'Discover Vietnamese through interactive units, vocabulary practice and real-life conversations.';
 
-  features: Feature[] = [
+  features = [
     {
       title: 'Vocabulary Learning',
       description: 'Learn essential Vietnamese words with examples.',
@@ -34,31 +28,27 @@ export class HomeComponent {
       description: 'Improve speaking with listening and speaking exercises.',
     },
     {
-      title: 'Interactive Lessons',
+      title: 'Interactive units',
       description: 'Practice through quizzes and conversations.',
     },
   ];
 
-  courses: Course[] = [
-    {
-      title: 'Greetings',
-      description: 'Learn how to say hello and introduce yourself.',
-    },
-    {
-      title: 'Numbers',
-      description: 'Learn Vietnamese numbers easily.',
-    },
-    {
-      title: 'Food',
-      description: 'Useful phrases for ordering food.',
-    },
-  ];
+  levels: LevelDTO[] = [];
 
-  startLearning() {
-    console.log('Start learning clicked');
+  constructor(private learningService: LearningService) {}
+
+  ngOnInit(): void {
+    this.loadLearningPath();
   }
 
-  createAccount() {
-    console.log('Create account clicked');
+  loadLearningPath() {
+    this.learningService.getLearningPath().subscribe(
+  (res: LevelDTO[]) => {
+    this.levels = res;
+  },
+  (err) => {
+    console.error(err);
+  }
+);
   }
 }
