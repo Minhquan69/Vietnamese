@@ -4,11 +4,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SubmitQuizDTO } from '../models/submit-quiz.model';
 import { PlacementDTO } from '../models/placement.model';
+import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class TestService {
-  private apiUrl = 'http://localhost:5108/api/tests';
+  private apiUrl = `${environment.apiBaseUrl}/tests`;
 
   constructor(private http: HttpClient) {}
 

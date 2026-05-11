@@ -4,12 +4,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LevelDTO } from '../models/level.model';
 import { CourseDTO } from '../models/course.model';
 import { UnitDTO } from '../models/unit.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LearningService {
-  private apiUrl = 'http://localhost:5108/api/learning';
+  private apiUrl = `${environment.apiBaseUrl}/learning`;
 
   constructor(private http: HttpClient) {}
   //token

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { SearchResult } from '../models/search-result.model';
 import { Video } from '../models/video.model';
+import { environment } from '../../../environments/environment';
 
 import { from, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -9,7 +10,7 @@ import { map, switchMap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class VideoService {
-  private apiUrl = 'http://localhost:5108/api/videos';
+  private apiUrl = `${environment.apiBaseUrl}/videos`;
   // token
   constructor(private http: HttpClient) {}
   private getOptions(isText: boolean = false) {
