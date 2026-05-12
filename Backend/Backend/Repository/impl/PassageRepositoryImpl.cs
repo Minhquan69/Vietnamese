@@ -69,7 +69,7 @@ namespace Backend.Repository.impl
                 .ToListAsync();
 
             
-            await _context.UserAnswer.Where(x => answerIds.Contains(x.AnswerId)).ExecuteDeleteAsync();
+            await _context.UserAnswer.Where(x => x.AnswerId != null && answerIds.Contains(x.AnswerId.Value)).ExecuteDeleteAsync();
             await _context.Answers.Where(x => answerIds.Contains(x.AnswerId)).ExecuteDeleteAsync();
             await _context.Questions.Where(x => questionIds.Contains(x.QuestionId)).ExecuteDeleteAsync();
             await _context.Passages.Where(x => ids.Contains(x.PassageId)).ExecuteDeleteAsync();

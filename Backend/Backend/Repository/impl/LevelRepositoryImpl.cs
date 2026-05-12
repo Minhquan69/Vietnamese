@@ -78,7 +78,7 @@ namespace Backend.Repository.impl
 
             var answerIds = await _context.Answers.Where(a => questionIds.Contains(a.QuestionId)).Select(a => a.AnswerId).ToListAsync();
 
-            await _context.UserAnswer.Where(x => answerIds.Contains(x.AnswerId)).ExecuteDeleteAsync();
+            await _context.UserAnswer.Where(x => x.AnswerId != null && answerIds.Contains(x.AnswerId.Value)).ExecuteDeleteAsync();
             await _context.UserQuiz.Where(x => quizIds.Contains(x.QuizId)).ExecuteDeleteAsync();
             await _context.Answers.Where(x => answerIds.Contains(x.AnswerId)).ExecuteDeleteAsync();
             await _context.Questions.Where(x => questionIds.Contains(x.QuestionId)).ExecuteDeleteAsync();

@@ -10,6 +10,12 @@
 
         public string QuestionText { get; set; } = string.Empty;
 
+        public string QuestionType { get; set; } = "MultipleChoice";
+
+        public string? Explanation { get; set; }
+
+        public string? InteractivePayload { get; set; }
+
         public string? ImageUrl { get; set; }
 
         public string? AudioUrl { get; set; }

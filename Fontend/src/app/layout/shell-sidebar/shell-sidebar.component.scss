@@ -1,0 +1,187 @@
+@use '../../../styles/abstracts/mixins' as *;
+
+.sidebar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--space-6) var(--space-4);
+  background: var(--color-sidebar-bg);
+  border-right: 1px solid var(--color-border);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-8);
+}
+
+.sidebar__logo {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: var(--gradient-hero);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-glass);
+  animation: vlp-pulse-glow 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar__logo {
+    animation: none;
+  }
+}
+
+.sidebar__logo-mark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-sm);
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+.sidebar__titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sidebar__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-md);
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.sidebar__tag {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  transition: background var(--duration-fast) ease, color var(--duration-fast) ease,
+    transform var(--duration-fast) var(--ease-spring);
+}
+
+.sidebar__link:hover {
+  background: var(--color-accent-muted);
+  color: var(--color-text);
+  transform: translateX(2px);
+}
+
+.sidebar__link--active {
+  background: linear-gradient(
+    90deg,
+    rgba(99, 102, 241, 0.18),
+    rgba(20, 184, 166, 0.08)
+  );
+  color: var(--color-text);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.sidebar__icon {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-subtle);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.sidebar__link--active .sidebar__icon {
+  background: var(--color-accent-muted);
+}
+
+/* Minimal iconography — data-icon maps to CSS shapes (no icon pack dependency) */
+.sidebar__icon[data-icon='spark']::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 4px;
+  background: conic-gradient(from 210deg, var(--color-accent), var(--color-accent-secondary));
+}
+.sidebar__icon[data-icon='path']::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  top: 10px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--color-accent);
+  box-shadow: 0 -5px 0 var(--color-accent-secondary);
+}
+.sidebar__icon[data-icon='book']::after {
+  content: '';
+  position: absolute;
+  inset: 5px 6px;
+  border: 2px solid var(--color-accent);
+  border-radius: 2px;
+}
+.sidebar__icon[data-icon='search']::after {
+  content: '';
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--color-accent);
+  border-radius: 50%;
+  top: 4px;
+  left: 4px;
+}
+.sidebar__icon[data-icon='target']::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 2px solid var(--color-accent-secondary);
+  border-radius: 50%;
+}
+.sidebar__icon[data-icon='users']::after,
+.sidebar__icon[data-icon='video']::after,
+.sidebar__icon[data-icon='stack']::after,
+.sidebar__icon[data-icon='clipboard']::after,
+.sidebar__icon[data-icon='user']::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  background: var(--color-text-muted);
+  border-radius: 4px;
+  opacity: 0.5;
+}
+
+.sidebar__label {
+  @include truncate;
+}
+
+.sidebar__glow {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  right: -80px;
+  bottom: -40px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.35), transparent 70%);
+  pointer-events: none;
+  filter: blur(2px);
+}

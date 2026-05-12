@@ -3,7 +3,6 @@ using Backend.dto;
 using Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers
 {
@@ -46,15 +45,21 @@ namespace Backend.Controllers
          */
         [Authorize]
         [HttpGet("me")]
-        public IActionResult Me()
+        public async Task<IActionResult> Me()
         {
-            return Ok(new
+            var id = _userContext.GetUserId();
+            if (id <= 0)
             {
-                userId = _userContext.GetUserId(),
-                email = _userContext.GetEmail(),
-                name = _userContext.GetName(),
-                role = _userContext.GetRole() 
-            });
+                return Unauthorized();
+            }
+
+            var me = await _userService.GetMeProfile(id);
+            if (me == null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(me);
         }
         /*
          * đổi mật khẩu tài khoản
@@ -85,7 +90,7 @@ namespace Backend.Controllers
          * 
          * thuphuong21072004
          */
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers(
     [FromQuery] string? email,
@@ -101,7 +106,7 @@ namespace Backend.Controllers
          * 
          * thuphuong21072004
          */
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPut("users/{id}/status")]
         public async Task<IActionResult> UpdateStatus(int id, [FromQuery] int status)
         {
@@ -113,7 +118,7 @@ namespace Backend.Controllers
          * 
          * thuphuong21072004
          */
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPut("users/{id}/role")]
         public async Task<IActionResult> UpdateRole(int id, [FromBody] UserDTO dto)
         {

@@ -1,75 +1,138 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AccountService } from '../../services/account.service';
 import { BaseService } from '../../services/base.service';
+import { UiButtonComponent } from '../../../shared/ui/button/ui-button.component';
+import { UiInputComponent } from '../../../shared/ui/input/ui-input.component';
+import { UiCardComponent } from '../../../shared/ui/card/ui-card.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [FormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    UiButtonComponent,
+    UiInputComponent,
+    UiCardComponent,
+  ],
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css'],
+  styleUrl: './profile.component.scss',
 })
 export class ProfileComponent {
-  name: string = '';
-  email: string = '';
-  role: string = '';
+  private readonly api = inject(AccountService);
+  private readonly base = inject(BaseService);
+  private readonly fb = inject(FormBuilder);
 
-  newName: string = '';
-  newEmail: string = '';
+  readonly savingProfile = signal(false);
+  readonly savingPassword = signal(false);
+  readonly uploading = signal(false);
+  readonly avatarUrl = signal<string | null>(null);
 
-  oldPassword: string = '';
-  newPassword: string = '';
+  readonly profileForm = this.fb.nonNullable.group({
+    name: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.email]],
+  });
 
-  constructor(private api: AccountService,
-    private baseService: BaseService,
-  ) {}
+  readonly passwordForm = this.fb.nonNullable.group({
+    oldPassword: ['', Validators.required],
+    newPassword: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/),
+      ],
+    ],
+  });
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadProfile();
   }
 
-  loadProfile() {
-    this.api.getCurrentUser().subscribe((res: any) => {
-      this.name = res.name;
-      this.email = res.email;
-      this.role = res.role;
-
-      this.newName = this.name;
-      this.newEmail = this.email;
+  loadProfile(): void {
+    this.api.getCurrentUser().subscribe({
+      next: (res) => {
+        this.profileForm.patchValue({ name: res.name, email: res.email });
+        this.avatarUrl.set(res.avatarUrl ?? null);
+      },
+      error: (err) => this.base.handleError(err, 'Could not load profile'),
     });
   }
 
-  updateProfile() {
-    const data = {
-      name: this.newName,
-      email: this.newEmail,
-    };
-    
-    this.api.updateProfile(data).subscribe({
+  avatarSrc(): string | null {
+    const rel = this.avatarUrl();
+    if (!rel) {
+      return null;
+    }
+    if (rel.startsWith('http')) {
+      return rel;
+    }
+    return `${environment.apiOrigin}${rel}`;
+  }
+
+  onAvatarSelected(ev: Event): void {
+    const input = ev.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) {
+      return;
+    }
+    this.uploading.set(true);
+    this.api.uploadAvatar(file).subscribe({
+      next: (res) => {
+        this.uploading.set(false);
+        this.avatarUrl.set(res.avatarUrl);
+        input.value = '';
+      },
+      error: (err) => {
+        this.uploading.set(false);
+        this.base.handleError(err, 'Avatar upload failed');
+      },
+    });
+  }
+
+  updateProfile(): void {
+    if (this.profileForm.invalid) {
+      this.profileForm.markAllAsTouched();
+      return;
+    }
+    this.savingProfile.set(true);
+    const { name, email } = this.profileForm.getRawValue();
+    this.api.updateProfile({ name, email }).subscribe({
       next: () => {
+        this.savingProfile.set(false);
         alert('Profile updated');
-        this.name = this.newName;
-        this.email = this.newEmail;
       },
-      error: (err) => this.baseService.handleError(err, 'Update failed'),
+      error: (err) => {
+        this.savingProfile.set(false);
+        this.base.handleError(err, 'Update failed');
+      },
     });
   }
 
-  changePassword() {
-    const data = {
-      oldPassword: this.oldPassword,
-      newPassword: this.newPassword,
-    };
-
-    this.api.changePassword(data).subscribe({
+  changePassword(): void {
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+    this.savingPassword.set(true);
+    const { oldPassword, newPassword } = this.passwordForm.getRawValue();
+    this.api.changePassword({ oldPassword, newPassword }).subscribe({
       next: () => {
+        this.savingPassword.set(false);
+        this.passwordForm.reset();
         alert('Password changed');
-        this.oldPassword = '';
-        this.newPassword = '';
       },
-      error: (err) =>
-        this.baseService.handleError(err, 'Change password failed'),
+      error: (err) => {
+        this.savingPassword.set(false);
+        this.base.handleError(err, 'Change password failed');
+      },
     });
   }
 }

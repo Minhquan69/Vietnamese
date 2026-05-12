@@ -34,7 +34,9 @@ public class ExceptionMiddleware
         var result = JsonSerializer.Serialize(new
         {
             success = false,
-            message = message
+            message = message,
+            data = (object?)null,
+            errors = new[] { message }
         });
 
         await context.Response.WriteAsync(result);

@@ -1,0 +1,243 @@
+<section class="dash" [class.dash--ready]="ready()">
+  <div class="dash__bg" aria-hidden="true"></div>
+
+  <div class="dash__hero vlp-hover-lift">
+    <div class="dash__hero-inner">
+      <p class="dash__eyebrow">Learning hub</p>
+      <h2 class="dash__headline">
+        @if (displayName()) {
+          <span>Hi, {{ displayName() }} — </span>
+        }
+        <span class="text-gradient">keep your streak glowing</span>
+      </h2>
+      <p class="dash__sub text-muted">
+        Live stats from your quizzes and units. Every bar, badge, and ring reflects real progress in
+        SQL Server.
+      </p>
+      <div class="dash__hero-actions">
+        <ui-button variant="primary" routerLink="/user/units">Continue path</ui-button>
+        <ui-button variant="secondary" routerLink="/home">Browse catalog</ui-button>
+      </div>
+    </div>
+    <div class="dash__hero-art" aria-hidden="true">
+      <div class="dash__orb dash__orb--a"></div>
+      <div class="dash__orb dash__orb--b"></div>
+      <div class="dash__orb dash__orb--c"></div>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="dash__grid dash__grid--stats">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <ui-card variant="glass" padding="md">
+          <ui-skeleton variant="text" width="40%" height="0.75rem" />
+          <div style="height: 12px"></div>
+          <ui-skeleton variant="rect" width="100%" height="2rem" />
+        </ui-card>
+      }
+    </div>
+    <div class="dash__grid dash__grid--main">
+      <ui-card variant="elevated" padding="lg" class="dash__panel">
+        <ui-skeleton variant="rect" width="100%" height="180px" />
+      </ui-card>
+      <ui-card variant="elevated" padding="lg" class="dash__panel">
+        <ui-skeleton variant="text" width="60%" height="1rem" />
+        <div style="height: 16px"></div>
+        <ui-skeleton variant="rect" width="100%" height="120px" />
+      </ui-card>
+    </div>
+  } @else if (loadError()) {
+    <ui-card variant="elevated" padding="lg" class="dash__error">
+      <p>{{ loadError() }}</p>
+      <ui-button variant="primary" (click)="retry()">Retry</ui-button>
+    </ui-card>
+  } @else {
+    @if (dash(); as d) {
+    <div class="dash__grid dash__grid--stats">
+      <ui-card variant="glass" padding="md" class="dash__stat dash__stat--streak">
+        <p class="dash__stat-label">Daily streak</p>
+        <p class="dash__stat-value dash__stat-value--accent">{{ d.stats.streakDays }}</p>
+        <p class="dash__stat-hint text-muted">Days in a row with study activity</p>
+      </ui-card>
+      <ui-card variant="elevated" padding="md" class="dash__stat">
+        <p class="dash__stat-label">XP today</p>
+        <p class="dash__stat-value">+{{ d.stats.xpToday }}</p>
+        <p class="dash__stat-hint text-muted">From quiz scores logged today (UTC)</p>
+      </ui-card>
+      <ui-card variant="elevated" padding="md" class="dash__stat">
+        <p class="dash__stat-label">Lifetime XP</p>
+        <p class="dash__stat-value">{{ d.stats.xpTotal | number }}</p>
+        <p class="dash__stat-hint text-muted">{{ d.stats.quizzesPassedTotal }} quizzes passed</p>
+      </ui-card>
+      <ui-card variant="elevated" padding="md" class="dash__stat dash__stat--donut">
+        <p class="dash__stat-label">Daily goal</p>
+        <div class="dash__donut-row">
+          <ui-progress-donut
+            [value]="d.stats.dailyGoalProgressPercent"
+            [size]="96"
+            [stroke]="9"
+            label="XP"
+          />
+          <div>
+            <p class="dash__goal-line">
+              <strong>{{ d.stats.xpToday }}</strong> / {{ d.stats.dailyGoalXp }} XP
+            </p>
+            <p class="dash__stat-hint text-muted">Ring fills as you hit today’s XP target</p>
+          </div>
+        </div>
+      </ui-card>
+    </div>
+
+    <div class="dash__grid dash__grid--main">
+      <div class="dash__col dash__col--wide">
+        <ui-card variant="elevated" padding="lg" class="dash__panel dash__panel--chart">
+          <div class="dash__panel-head">
+            <h3>7-day momentum</h3>
+            <span class="dash__pill">XP / day</span>
+          </div>
+          <p class="text-muted dash__panel-lead">Stacked from your <code>UserQuiz</code> history.</p>
+          <div class="dash__chart" role="img" aria-label="Seven day XP chart">
+            @for (p of d.activitySeries; track p.date) {
+              <div class="dash__chart-col">
+                <div class="dash__chart-bar-wrap">
+                  <div
+                    class="dash__chart-bar"
+                    [class.dash__chart-bar--active]="p.hadActivity"
+                    [style.height.%]="barHeightPct(p.xp)"
+                  ></div>
+                </div>
+                <span class="dash__chart-xp">{{ p.xp }}</span>
+                <span class="dash__chart-day">{{ dayLabel(p.date) }}</span>
+              </div>
+            }
+          </div>
+        </ui-card>
+
+        <ui-card variant="elevated" padding="lg" class="dash__panel">
+          <div class="dash__panel-head">
+            <h3>Daily challenges</h3>
+            <span class="dash__pill dash__pill--accent">Today</span>
+          </div>
+          <ul class="dash__challenges">
+            @for (c of d.challenges; track c.id) {
+              <li class="dash__challenge" [class.dash__challenge--done]="c.completed">
+                <div class="dash__challenge-top">
+                  <div>
+                    <p class="dash__challenge-title">{{ c.title }}</p>
+                    <p class="dash__challenge-desc text-muted">{{ c.description }}</p>
+                  </div>
+                  @if (c.completed) {
+                    <span class="dash__check">✓</span>
+                  }
+                </div>
+                <div class="dash__meter">
+                  <div class="dash__meter-fill" [style.width.%]="challengePct(c)"></div>
+                </div>
+                <p class="dash__challenge-meta text-muted">{{ c.current }} / {{ c.target }}</p>
+              </li>
+            }
+          </ul>
+        </ui-card>
+      </div>
+
+      <div class="dash__col">
+        <ui-card variant="glass" padding="lg" class="dash__panel dash__panel--continue">
+          <div class="dash__panel-head">
+            <h3>Continue learning</h3>
+          </div>
+          @if (d.continueLearning; as c) {
+            <div class="dash__continue-card" [class.dash__continue-card--locked]="c.isLocked">
+              <p class="dash__continue-eyebrow">{{ c.levelName }} · {{ c.courseName }}</p>
+              <h4>{{ c.unitName }}</h4>
+              @if (c.isLocked) {
+                <p class="text-muted">Complete the previous unit on your path to unlock this lesson.</p>
+                <ui-button variant="secondary" routerLink="/user/units">View learning path</ui-button>
+              } @else {
+                <p class="text-muted">Jump back into the quiz for this unit.</p>
+                <ui-button
+                  variant="primary"
+                  [routerLink]="['/user/quiz']"
+                  [queryParams]="quizParams(c.unitId)"
+                >
+                  Resume unit
+                </ui-button>
+              }
+            </div>
+          } @else {
+            <p class="text-muted">No active unit yet. Open your path to get started.</p>
+            <ui-button variant="primary" routerLink="/user/units">Open learning path</ui-button>
+          }
+        </ui-card>
+
+        <ui-card variant="elevated" padding="lg" class="dash__panel">
+          <div class="dash__panel-head">
+            <h3>Recommended next</h3>
+          </div>
+          @if (d.recommended.length === 0) {
+            <p class="text-muted">You’re caught up on surfaced units — explore more in your path.</p>
+          } @else {
+            <ul class="dash__reco">
+              @for (r of d.recommended; track r.unitId) {
+                <li class="dash__reco-row">
+                  <div>
+                    <p class="dash__reco-title">{{ r.unitName }}</p>
+                    <p class="dash__reco-sub text-muted">{{ r.courseName }}</p>
+                  </div>
+                  @if (r.isLocked) {
+                    <ui-button variant="ghost" routerLink="/user/units">Path</ui-button>
+                  } @else {
+                    <ui-button
+                      variant="secondary"
+                      [routerLink]="['/user/quiz']"
+                      [queryParams]="quizParams(r.unitId)"
+                    >
+                      Open
+                    </ui-button>
+                  }
+                </li>
+              }
+            </ul>
+          }
+        </ui-card>
+
+        @if (d.vocabReminder; as v) {
+          <ui-card variant="elevated" padding="lg" class="dash__panel dash__panel--vocab">
+            <div class="dash__panel-head">
+              <h3>Review reminder</h3>
+              <span class="dash__pill">{{ v.reviewCount }} items</span>
+            </div>
+            <p>{{ v.message }}</p>
+            <p class="text-muted dash__vocab-hint">
+              Pulled from incorrect answers in your recent quiz attempts (last 14 days).
+            </p>
+            <ui-button variant="secondary" routerLink="/user/tests">Practice tests</ui-button>
+          </ui-card>
+        }
+
+        <ui-card variant="elevated" padding="lg" class="dash__panel">
+          <div class="dash__panel-head">
+            <h3>Achievements</h3>
+            <span class="dash__pill">{{ unlockedCount(d) }}/{{ d.achievements.length }}</span>
+          </div>
+          <div class="dash__badges">
+            @for (a of d.achievements; track a.id) {
+              <div class="dash__badge" [class.dash__badge--locked]="!a.unlocked">
+                <span class="dash__badge-icon" aria-hidden="true">{{ a.icon }}</span>
+                <p class="dash__badge-title">{{ a.title }}</p>
+                <p class="dash__badge-desc text-muted">{{ a.description }}</p>
+              </div>
+            }
+          </div>
+        </ui-card>
+
+        <ui-card variant="glass" padding="md" class="dash__panel dash__panel--meta">
+          <p class="dash__meta-line">
+            <strong>{{ d.stats.unitsCompletedTotal }}</strong> units completed overall
+          </p>
+          <p class="text-muted dash__meta-sub">Synced from <code>UserProgress</code> and quiz results.</p>
+        </ui-card>
+      </div>
+    </div>
+    }
+  }
+</section>

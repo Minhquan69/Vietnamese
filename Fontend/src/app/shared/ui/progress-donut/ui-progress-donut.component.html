@@ -1,0 +1,33 @@
+<div class="donut" [style.width.px]="size" [style.height.px]="size">
+  <svg [attr.width]="size" [attr.height]="size" class="donut__svg">
+    <defs>
+      <linearGradient [id]="gradientId" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color: var(--color-accent)" />
+        <stop offset="100%" style="stop-color: var(--color-accent-secondary)" />
+      </linearGradient>
+    </defs>
+    <circle
+      class="donut__track"
+      [attr.cx]="size / 2"
+      [attr.cy]="size / 2"
+      [attr.r]="radius"
+      [attr.stroke-width]="stroke"
+    />
+    <circle
+      class="donut__value"
+      [attr.cx]="size / 2"
+      [attr.cy]="size / 2"
+      [attr.r]="radius"
+      [attr.stroke-width]="stroke"
+      [attr.stroke]="'url(#' + gradientId + ')'"
+      [style.stroke-dasharray]="circumference"
+      [style.stroke-dashoffset]="dashoffset"
+    />
+  </svg>
+  <div class="donut__center">
+    <span class="donut__pct">{{ normalized }}%</span>
+    @if (label) {
+      <span class="donut__lbl">{{ label }}</span>
+    }
+  </div>
+</div>

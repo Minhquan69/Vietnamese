@@ -11,6 +11,10 @@ namespace Backend.Repository
 
         Task DeleteQuiz(Quiz quiz);
         Task<Quiz?> GetQuizById(int quizId);
+
+        /// <summary>Quiz metadata only (no nested questions).</summary>
+        Task<Quiz?> GetQuizSummary(int quizId);
+
         Task Save();
     }
 }

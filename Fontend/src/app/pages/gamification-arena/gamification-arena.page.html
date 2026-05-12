@@ -1,0 +1,138 @@
+<div class="arena">
+  <div class="arena__bg" aria-hidden="true"></div>
+
+  <header class="arena__head">
+    <div>
+      <p class="arena__eyebrow">Guild hall</p>
+      <h1 class="arena__title">Your progression hub</h1>
+      <p class="arena__lead">
+        XP, streaks, daily contracts, achievements, and badges — all synced from the server. Keep learning to climb the
+        ranks.
+      </p>
+    </div>
+    <div class="arena__head-actions">
+      <button type="button" class="arena__btn" (click)="refresh()" [disabled]="loading()">Refresh</button>
+      <a routerLink="/dashboard" class="arena__ghost">Overview</a>
+    </div>
+  </header>
+
+  @if (error()) {
+    <p class="arena__error" role="alert">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <div class="arena__loading">Syncing your guild profile…</div>
+  } @else {
+    @if (state(); as s) {
+    <section class="arena__hero arena__panel arena__panel--glow">
+      <div class="arena__hero-grid">
+        <div class="arena__rank">
+          <span class="arena__rank-label">Rank tier</span>
+          <span class="arena__rank-value">{{ s.profile.displayLevel }}</span>
+          <span class="arena__rank-sub">{{ s.profile.totalXp | number }} XP total</span>
+        </div>
+        <div class="arena__xp">
+          <div class="arena__xp-head">
+            <span>Next level</span>
+            <span class="arena__xp-nums"
+              >{{ s.profile.xpIntoCurrentLevel | number }} / {{ s.profile.xpRequiredForNextLevel | number }} XP</span
+            >
+          </div>
+          <div class="arena__xp-track" [class.arena__xp-track--pulse]="xpPulse()">
+            <div class="arena__xp-fill" [style.width.%]="xpPct()"></div>
+            <div class="arena__xp-shimmer" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="arena__streak">
+          <span class="arena__streak-icon" aria-hidden="true">🔥</span>
+          <div>
+            <span class="arena__streak-label">Streak</span>
+            <span class="arena__streak-value">{{ s.profile.currentStreak }} days</span>
+            <span class="arena__streak-sub">Best {{ s.profile.longestStreak }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="arena__panel">
+      <h2 class="arena__h2">Daily contracts</h2>
+      <div class="arena__dailies">
+        @for (d of s.dailyChallenges; track d.code) {
+          <article class="arena__daily" [class.arena__daily--done]="d.completed">
+            <div class="arena__daily-top">
+              <h3>{{ d.title }}</h3>
+              @if (d.completed) {
+                <span class="arena__pill arena__pill--gold">Cleared</span>
+              }
+            </div>
+            <p class="arena__muted">{{ d.description }}</p>
+            <div class="arena__mini-track">
+              <div class="arena__mini-fill" [style.width.%]="(100 * d.progress) / d.target"></div>
+            </div>
+            <p class="arena__daily-meta">{{ d.progress }} / {{ d.target }} · +{{ d.xpReward }} XP</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <div class="arena__split">
+      <section class="arena__panel">
+        <h2 class="arena__h2">Achievements</h2>
+        <div class="arena__ach-grid">
+          @for (a of s.achievements; track a.code) {
+            <article class="arena__ach" [class.arena__ach--open]="a.unlocked">
+              <span class="arena__ach-icon">{{ iconFromKey(a.iconKey) }}</span>
+              <h3>{{ a.title }}</h3>
+              <p>{{ a.description }}</p>
+              @if (a.unlocked) {
+                <span class="arena__ach-burst" aria-hidden="true"></span>
+              }
+            </article>
+          }
+        </div>
+      </section>
+
+      <section class="arena__panel">
+        <h2 class="arena__h2">Badges</h2>
+        <ul class="arena__badges">
+          @for (b of s.badges; track b.code) {
+            <li class="arena__badge" [class.arena__badge--earned]="b.earned" [attr.data-tier]="b.tier.toString()">
+              <span class="arena__badge-tier">{{ tierLabel(b.tier) }}</span>
+              <strong>{{ b.title }}</strong>
+              <span>{{ b.description }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+    </div>
+
+    <section class="arena__panel arena__panel--table">
+      <h2 class="arena__h2">Leaderboard</h2>
+      <div class="arena__table-wrap">
+        <table class="arena__table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Learner</th>
+              <th>XP</th>
+              <th>Tier</th>
+              <th>Streak</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of board(); track r.userId) {
+              <tr>
+                <td>{{ r.rank }}</td>
+                <td>{{ r.name }}</td>
+                <td>{{ r.totalXp | number }}</td>
+                <td>{{ r.displayLevel }}</td>
+                <td>{{ r.currentStreak }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+  }
+</div>

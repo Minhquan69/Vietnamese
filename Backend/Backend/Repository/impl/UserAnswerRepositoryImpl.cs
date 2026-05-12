@@ -29,6 +29,11 @@ namespace Backend.Repository.impl
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddUserAnswers(IEnumerable<UserAnswer> rows)
+        {
+            await _context.UserAnswer.AddRangeAsync(rows);
+        }
+
         /* 
          * Lấy danh sách câu trả lời của người dùng theo UserId và QuizId 
          * O(N) 

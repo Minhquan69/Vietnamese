@@ -1,0 +1,53 @@
+@if (loading()) {
+  <p class="text-muted">Opening unit…</p>
+} @else if (error()) {
+  <p>{{ error() }}</p>
+} @else {
+  @if (outline(); as o) {
+  <div class="unit-shell">
+    <aside class="unit-shell__nav" aria-label="Lessons in this unit">
+      <div class="unit-shell__nav-head">
+        <a class="unit-shell__back" [routerLink]="['/learn/course', o.courseId]">← {{ o.courseName }}</a>
+        <h2 class="unit-shell__title">{{ o.unitName }}</h2>
+        <p class="unit-shell__progress text-muted">
+          {{ o.lessonsCompleted }}/{{ o.lessonTotal }} lessons · {{ o.progressPercent }}%
+        </p>
+        <div class="unit-shell__bar">
+          <div class="unit-shell__bar-fill" [style.width.%]="o.progressPercent"></div>
+        </div>
+      </div>
+      <nav class="unit-shell__list">
+        @for (les of o.lessons; track les.lessonId) {
+          <a
+            class="unit-shell__lesson"
+            routerLinkActive="unit-shell__lesson--active"
+            [routerLink]="['lesson', les.lessonId]"
+            [class.unit-shell__lesson--done]="les.completed"
+          >
+            <span class="unit-shell__ico">{{ lessonIcon(les.lessonType) }}</span>
+            <span class="unit-shell__lesson-body">
+              <span class="unit-shell__lesson-title">{{ les.title }}</span>
+              <span class="unit-shell__lesson-meta">{{ les.lessonType }} · {{ les.durationMinutes }} min</span>
+            </span>
+            @if (les.completed) {
+              <span class="unit-shell__check">✓</span>
+            }
+          </a>
+        }
+      </nav>
+      @if (o.quizUnitId) {
+        <a
+          class="unit-shell__quiz"
+          [routerLink]="['/user/quiz']"
+          [queryParams]="{ unitId: o.quizUnitId, refType: 'UNIT', refId: o.quizUnitId }"
+        >
+          Unit quiz →
+        </a>
+      }
+    </aside>
+    <div class="unit-shell__main">
+      <router-outlet />
+    </div>
+  </div>
+  }
+}

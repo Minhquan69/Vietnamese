@@ -1,0 +1,339 @@
+<div class="vocab">
+  <div class="vocab__bg" aria-hidden="true"></div>
+
+  <header class="vocab__intro">
+    <p class="vocab__eyebrow">Contextual learning</p>
+    <h1 class="vocab__title">Vocabulary studio</h1>
+    <p class="vocab__lead">
+      Browse definitions with IPA and audio, save words you care about, and review them with spaced repetition until they stick.
+    </p>
+  </header>
+
+  @if (loggedIn() && stats(); as s) {
+    <section class="vocab__stats" aria-label="Your vocabulary progress">
+      <article class="vocab__stat vocab__stat--accent">
+        <span class="vocab__stat-label">Due now</span>
+        <strong class="vocab__stat-value">{{ s.dueCount }}</strong>
+      </article>
+      <article class="vocab__stat">
+        <span class="vocab__stat-label">Saved</span>
+        <strong class="vocab__stat-value">{{ s.savedCount }}</strong>
+      </article>
+      <article class="vocab__stat">
+        <span class="vocab__stat-label">Avg mastery</span>
+        <strong class="vocab__stat-value">{{ s.averageMastery | number: '1.0-0' }}%</strong>
+      </article>
+      <article class="vocab__stat">
+        <span class="vocab__stat-label">Mastered</span>
+        <strong class="vocab__stat-value">{{ s.masteredCount }}</strong>
+      </article>
+    </section>
+  }
+
+  <nav class="vocab__tabs" aria-label="Vocabulary sections">
+    <button
+      type="button"
+      class="vocab__tab"
+      [class.vocab__tab--active]="tab() === 'browse'"
+      (click)="setTab('browse')"
+    >
+      Browse
+    </button>
+    <button
+      type="button"
+      class="vocab__tab"
+      [class.vocab__tab--active]="tab() === 'study'"
+      (click)="setTab('study')"
+    >
+      Flashcards
+    </button>
+    <button
+      type="button"
+      class="vocab__tab"
+      [class.vocab__tab--active]="tab() === 'saved'"
+      [disabled]="!loggedIn()"
+      (click)="setTab('saved')"
+    >
+      Saved
+    </button>
+  </nav>
+
+  @if (tab() === 'browse') {
+    <section class="vocab__panel" aria-labelledby="browse-heading">
+      <div class="vocab__toolbar">
+        <h2 id="browse-heading" class="vocab__panel-title">Dictionary</h2>
+        <form class="vocab__search" (submit)="$event.preventDefault(); onSearchSubmit()">
+          <label class="visually-hidden" for="vocab-q">Search words</label>
+          <input
+            id="vocab-q"
+            class="vocab__input"
+            type="search"
+            placeholder="Search Vietnamese or English…"
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+          />
+          <button type="submit" class="vocab__btn vocab__btn--primary">Search</button>
+        </form>
+      </div>
+      @if (browseLoading()) {
+        <p class="vocab__hint">Loading…</p>
+      } @else {
+        <p class="vocab__meta">{{ total() }} words · tap a card for details</p>
+        <ul class="vocab__grid">
+          @for (c of items(); track c.vocabularyId) {
+            <li>
+              <button
+                type="button"
+                class="vocab-card"
+                (click)="openDictionary(c)"
+              >
+                <span class="vocab-card__word">{{ c.word }}</span>
+                @if (c.ipa) {
+                  <span class="vocab-card__ipa">/{{ c.ipa }}/</span>
+                }
+                @if (c.meaningEn) {
+                  <span class="vocab-card__mean">{{ c.meaningEn }}</span>
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  }
+
+  @if (tab() === 'study') {
+    <section class="vocab__panel vocab__panel--study" aria-labelledby="study-heading">
+      <h2 id="study-heading" class="vocab__panel-title">Spaced repetition</h2>
+
+      @if (!loggedIn()) {
+        <div class="vocab__gate">
+          <p>Sign in to load your review deck and track mastery.</p>
+          <a routerLink="/login" class="vocab__link-btn">Sign in</a>
+        </div>
+      } @else {
+        @if (studyLoading()) {
+          <p class="vocab__hint">Building your deck…</p>
+        } @else {
+          @if (currentCard(); as card) {
+        <div class="vocab__study-head">
+          <div class="vocab__progress" aria-hidden="true">
+            <div
+              class="vocab__progress-fill"
+              [style.width.%]="((deckIndex() + 1) / deck().length) * 100"
+            ></div>
+          </div>
+          <p class="vocab__progress-label">
+            Card {{ deckIndex() + 1 }} / {{ deck().length }}
+            · swipe ← Again · Easy →
+          </p>
+        </div>
+
+        <div
+          class="vocab-flash-root"
+          (touchstart)="onCardTouchStart($event)"
+          (touchend)="onCardTouchEnd($event)"
+        >
+          <button
+            type="button"
+            class="vocab-flash"
+            [class.vocab-flash--flipped]="flipped()"
+            (click)="toggleFlip()"
+            [attr.aria-pressed]="flipped()"
+          >
+            <span class="vocab-flash__inner">
+              <span class="vocab-flash__face vocab-flash__face--front">
+                <span class="vocab-flash__label">Word</span>
+                <span class="vocab-flash__word">{{ card.word }}</span>
+                @if (card.ipa) {
+                  <span class="vocab-flash__ipa">/{{ card.ipa }}/</span>
+                }
+                <button
+                  type="button"
+                  class="vocab-flash__audio"
+                  (click)="$event.stopPropagation(); playAudio(card.audioUrl)"
+                  [disabled]="!resolveAudioUrl(card.audioUrl)"
+                >
+                  Play audio
+                </button>
+                <span class="vocab-flash__hint">Tap to reveal meaning</span>
+              </span>
+              <span class="vocab-flash__face vocab-flash__face--back">
+                <span class="vocab-flash__label">Meaning & context</span>
+                @if (card.meaningEn) {
+                  <p class="vocab-flash__mean">{{ card.meaningEn }}</p>
+                }
+                @if (card.partOfSpeech) {
+                  <p class="vocab-flash__pos">{{ card.partOfSpeech }}</p>
+                }
+                @if (card.exampleSentence) {
+                  <blockquote class="vocab-flash__ex">{{ card.exampleSentence }}</blockquote>
+                }
+                @if (card.exampleTranslation) {
+                  <p class="vocab-flash__ex-tr">{{ card.exampleTranslation }}</p>
+                }
+                @if (card.contextNote) {
+                  <p class="vocab-flash__ctx">{{ card.contextNote }}</p>
+                }
+                <div class="vocab-flash__meta">
+                  <span>Mastery {{ card.masteryScore | number: '1.0-0' }}%</span>
+                  <span>{{ familiarityLabel(card.familiarity) }}</span>
+                  @if (card.isDue) {
+                    <span class="vocab-flash__due">Due</span>
+                  }
+                </div>
+              </span>
+            </span>
+          </button>
+        </div>
+
+        <div class="vocab__grades" role="group" aria-label="Review grade">
+          <button
+            type="button"
+            class="vocab-grade vocab-grade--again"
+            [disabled]="reviewing()"
+            (click)="grade('again')"
+          >
+            Again
+          </button>
+          <button
+            type="button"
+            class="vocab-grade vocab-grade--hard"
+            [disabled]="reviewing()"
+            (click)="grade('hard')"
+          >
+            Hard
+          </button>
+          <button
+            type="button"
+            class="vocab-grade vocab-grade--good"
+            [disabled]="reviewing()"
+            (click)="grade('good')"
+          >
+            Good
+          </button>
+          <button
+            type="button"
+            class="vocab-grade vocab-grade--easy"
+            [disabled]="reviewing()"
+            (click)="grade('easy')"
+          >
+            Easy
+          </button>
+        </div>
+          } @else {
+            <div class="vocab__empty-deck">
+              <p>You’re caught up — nothing due right now.</p>
+              <button type="button" class="vocab__btn vocab__btn--primary" (click)="loadDeck()">
+                Refresh deck
+              </button>
+            </div>
+          }
+        }
+      }
+    </section>
+  }
+
+  @if (tab() === 'saved' && loggedIn()) {
+    <section class="vocab__panel" aria-labelledby="saved-heading">
+      <h2 id="saved-heading" class="vocab__panel-title">Saved words</h2>
+      @if (savedLoading()) {
+        <p class="vocab__hint">Loading…</p>
+      } @else if (savedItems().length === 0) {
+        <p class="vocab__hint">No saved words yet. Browse and tap the bookmark in the dictionary.</p>
+      } @else {
+        <ul class="vocab__grid vocab__grid--saved">
+          @for (c of savedItems(); track c.vocabularyId) {
+            <li>
+              <button type="button" class="vocab-card vocab-card--saved" (click)="openDictionary(c)">
+                <span class="vocab-card__word">{{ c.word }}</span>
+                <span class="vocab-card__meter">
+                  <span class="vocab-card__meter-fill" [style.width.%]="c.masteryScore"></span>
+                </span>
+                <span class="vocab-card__meta">{{ c.masteryScore | number: '1.0-0' }}% · {{ familiarityLabel(c.familiarity) }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  }
+
+  @if (selected(); as dict) {
+    <div
+      class="vocab-modal-backdrop"
+      role="presentation"
+      (click)="closeDictionary()"
+    ></div>
+    <dialog
+      class="vocab-modal"
+      open
+      aria-modal="true"
+      aria-labelledby="dict-title"
+      (click)="$event.stopPropagation()"
+    >
+      <button type="button" class="vocab-modal__close" (click)="closeDictionary()" aria-label="Close">
+        ×
+      </button>
+      <h2 id="dict-title" class="vocab-modal__title">{{ dict.word }}</h2>
+      @if (dict.ipa) {
+        <p class="vocab-modal__ipa">/{{ dict.ipa }}/</p>
+      }
+      <div class="vocab-modal__actions">
+        <button
+          type="button"
+          class="vocab-modal__audio"
+          (click)="playAudio(dict.audioUrl)"
+          [disabled]="!resolveAudioUrl(dict.audioUrl)"
+        >
+          Play pronunciation
+        </button>
+        @if (loggedIn()) {
+          <button
+            type="button"
+            class="vocab-modal__save"
+            [disabled]="modalUserLoading()"
+            (click)="modalToggleSave()"
+          >
+            @if (modalUserLoading()) {
+              …
+            } @else if (modalUserState()?.saved) {
+              Saved — tap to remove
+            } @else {
+              Save to my list
+            }
+          </button>
+        }
+      </div>
+      @if (loggedIn() && modalUserState(); as mu) {
+        <div class="vocab-modal__progress">
+          <span>Mastery {{ mu.masteryScore | number: '1.0-0' }}%</span>
+          <span>{{ familiarityLabel(mu.familiarity) }}</span>
+        </div>
+      }
+      @if (dict.meaningEn) {
+        <p class="vocab-modal__block">{{ dict.meaningEn }}</p>
+      }
+      @if (dict.partOfSpeech) {
+        <p class="vocab-modal__pos">{{ dict.partOfSpeech }}</p>
+      }
+      @if (dict.exampleSentence) {
+        <blockquote class="vocab-modal__ex">{{ dict.exampleSentence }}</blockquote>
+      }
+      @if (dict.exampleTranslation) {
+        <p class="vocab-modal__ex-tr">{{ dict.exampleTranslation }}</p>
+      }
+      @if (dict.contextNote) {
+        <aside class="vocab-modal__ctx">
+          <strong>Context</strong>
+          <p>{{ dict.contextNote }}</p>
+        </aside>
+      }
+      @if (!loggedIn()) {
+        <p class="vocab-modal__signin">
+          <a routerLink="/login">Sign in</a> to save words and review with SRS.
+        </p>
+      }
+    </dialog>
+  }
+</div>

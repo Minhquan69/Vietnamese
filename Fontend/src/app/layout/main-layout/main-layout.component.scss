@@ -1,0 +1,5 @@
+/* Shell-specific tweaks only; grid lives in global `styles/layout/_app-shell.scss` */
+
+:host {
+  display: block;
+}

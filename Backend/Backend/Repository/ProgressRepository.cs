@@ -22,5 +22,9 @@ namespace Backend.Repository
         Task<List<UserProgress>> GetUserLevels(int userId, string refType );
         Task UpdateUserProgress(UserProgress progress);
 
+        Task<Dictionary<int, UserProgress>> GetUserLessonProgressAsync(int userId, List<int> lessonIds);
+
+        Task<bool> CompleteLessonProgressAsync(int userId, int lessonId);
+
     }
 }

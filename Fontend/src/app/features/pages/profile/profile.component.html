@@ -1,43 +1,58 @@
-<div class="login-bg">
+<div class="profile">
+  <div class="profile__header">
+    <h2>Profile</h2>
+    <p class="text-muted">Manage your identity and security.</p>
+  </div>
 
-    <div class="circle c1"></div>
-    <div class="circle c2"></div>
-    <div class="circle c3"></div>
-
-    <div class="login-card">
-
-        <h2>My Profile</h2>
-        <p class="subtitle">
-            Manage your account information
-        </p>
-
-        <div class="profile-info">
-            <p><b>Name:</b> {{name}}</p>
-            <p><b>Email:</b> {{email}}</p>
-            <p><b>Role:</b> {{role}}</p>
+  <div class="profile__grid">
+    <ui-card variant="glass" padding="lg" class="profile__card">
+      <h3>Photo</h3>
+      <div class="profile__avatar-row">
+        <div class="profile__avatar" [class.profile__avatar--empty]="!avatarSrc()">
+          @if (avatarSrc()) {
+            <img [src]="avatarSrc()!" alt="Avatar" />
+          } @else {
+            <span>{{ profileForm.controls.name.value.charAt(0) || '?' }}</span>
+          }
         </div>
+        <div class="profile__avatar-actions">
+          <input
+            #fileInput
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            hidden
+            (change)="onAvatarSelected($event)"
+          />
+          <ui-button variant="secondary" type="button" [loading]="uploading()" (click)="fileInput.click()">
+            Upload new photo
+          </ui-button>
+          <p class="text-muted profile__hint">JPEG, PNG, or WebP · max 5MB</p>
+        </div>
+      </div>
+    </ui-card>
 
-        <hr>
+    <ui-card variant="elevated" padding="lg" class="profile__card">
+      <h3>Account</h3>
+      <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="profile__form">
+        <ui-input label="Name" formControlName="name" autocomplete="name" />
+        <ui-input label="Email" type="email" formControlName="email" autocomplete="email" />
+        <ui-button variant="primary" type="submit" [loading]="savingProfile()">Save changes</ui-button>
+      </form>
+    </ui-card>
 
-        <h3>Update Information</h3>
-
-        <input type="text" placeholder="New Name" [(ngModel)]="newName" />
-        <input type="text" placeholder="New Email" [(ngModel)]="newEmail" />
-
-        <button (click)="updateProfile()">
-            Update Profile
-        </button>
-
-        <hr>
-
-        <h3>Change Password</h3>
-
-        <input type="password" placeholder="Old Password" [(ngModel)]="oldPassword" />
-        <input type="password" placeholder="New Password" [(ngModel)]="newPassword" />
-
-        <button (click)="changePassword()">
-            Change Password
-        </button>
-
-    </div>
+    <ui-card variant="elevated" padding="lg" class="profile__card profile__card--wide">
+      <h3>Security</h3>
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="profile__form">
+        <ui-input label="Current password" type="password" formControlName="oldPassword" autocomplete="current-password" />
+        <ui-input
+          label="New password"
+          type="password"
+          formControlName="newPassword"
+          autocomplete="new-password"
+          hint="8+ characters with letters and numbers"
+        />
+        <ui-button variant="secondary" type="submit" [loading]="savingPassword()">Update password</ui-button>
+      </form>
+    </ui-card>
+  </div>
 </div>

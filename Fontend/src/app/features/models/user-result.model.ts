@@ -3,5 +3,6 @@ export interface UserResult {
   email: string;
   name: string;
   role: string;
-  status: number;
+  status?: number;
+  avatarUrl?: string | null;
 }

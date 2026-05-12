@@ -1,0 +1,55 @@
+<div class="acms__bg"></div>
+<section class="acms acms-layout">
+  <header class="acms-layout__head">
+    <p class="acms__eyebrow">Operations</p>
+    <h1 class="acms__title">CMS Studio</h1>
+    <p class="acms__lead">
+      Curated admin workspace for catalog review, learner analytics, and access control. Use filters and pagination
+      for large datasets; edit content in the classic admin tools when you need full forms.
+    </p>
+  </header>
+
+  <nav class="acms-layout__tabs" aria-label="CMS sections">
+    <a
+      routerLink="/admin/cms/dashboard"
+      routerLinkActive="acms-layout__tab--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="acms-layout__tab"
+      >Overview</a
+    >
+    <a
+      routerLink="/admin/cms/courses"
+      routerLinkActive="acms-layout__tab--active"
+      class="acms-layout__tab"
+      >Courses</a
+    >
+    <a
+      routerLink="/admin/cms/lessons"
+      routerLinkActive="acms-layout__tab--active"
+      class="acms-layout__tab"
+      >Lessons</a
+    >
+    <a
+      routerLink="/admin/cms/vocabulary"
+      routerLinkActive="acms-layout__tab--active"
+      class="acms-layout__tab"
+      >Vocabulary</a
+    >
+    <a
+      routerLink="/admin/cms/quizzes"
+      routerLinkActive="acms-layout__tab--active"
+      class="acms-layout__tab"
+      >Quizzes</a
+    >
+    @if (isAdmin()) {
+      <a
+        routerLink="/admin/cms/users"
+        routerLinkActive="acms-layout__tab--active"
+        class="acms-layout__tab"
+        >Users</a
+      >
+    }
+  </nav>
+
+  <router-outlet />
+</section>

@@ -14,6 +14,14 @@ namespace Backend.Models
 
         public string QuestionText { get; set; } = string.Empty;
 
+        /// <summary>MultipleChoice, FillBlank, DragDrop, ReorderSentence, Listening</summary>
+        public string QuestionType { get; set; } = "MultipleChoice";
+
+        public string? Explanation { get; set; }
+
+        /// <summary>JSON: grading metadata (blanks, correct order, drag targets). Redacted for players.</summary>
+        public string? InteractivePayload { get; set; }
+
         public string? ImageUrl { get; set; }
         public string? AudioUrl { get; set; }
 

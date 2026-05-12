@@ -1,37 +1,48 @@
-<div class="login-bg">
+<app-auth-page title="Welcome back" subtitle="Sign in to continue your Vietnamese journey.">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+    @if (error()) {
+      <div class="auth-alert" role="alert">{{ error() }}</div>
+    }
 
-    <div class="circle c1"></div>
-    <div class="circle c2"></div>
-    <div class="circle c3"></div>
+    <ui-input
+      label="Email"
+      type="email"
+      autocomplete="email"
+      formControlName="email"
+      [error]="
+        form.controls.email.touched && form.controls.email.invalid
+          ? 'Enter a valid email'
+          : ''
+      "
+    />
 
-    <div class="login-card">
+    <ui-input
+      label="Password"
+      type="password"
+      autocomplete="current-password"
+      formControlName="password"
+      [error]="
+        form.controls.password.touched && form.controls.password.invalid
+          ? 'Password is required'
+          : ''
+      "
+    />
 
-        <h2>Login Account</h2>
-        <p class="subtitle">
-            Start learning Vietnamese with VietPhuong
-        </p>
-
-        <input type="text" placeholder="Email" [(ngModel)]="email" />
-
-        <input type="password" placeholder="Password" [(ngModel)]="password" />
-
-        <div class="login-options">
-            <label>
-                <input type="checkbox"> Remember me
-            </label>
-
-            <a>Forgot password?</a>
-        </div>
-
-        <button (click)="login()">
-            Login
-        </button>
-
-        <div class="create">
-            Don't have an account?
-            <a routerLink="/register">Create Account</a>
-        </div>
-
+    <div class="auth-row">
+      <label class="auth-check">
+        <input type="checkbox" disabled />
+        <span>Remember this device (soon)</span>
+      </label>
+      <a routerLink="/forgot-password" class="auth-link">Forgot password?</a>
     </div>
 
-</div>
+    <ui-button variant="primary" type="submit" [block]="true" [loading]="loading()">
+      Sign in
+    </ui-button>
+
+    <p class="auth-footer text-muted">
+      New here?
+      <a routerLink="/user/register" class="auth-link">Create an account</a>
+    </p>
+  </form>
+</app-auth-page>

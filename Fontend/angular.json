@@ -27,7 +27,7 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles/main.scss"
             ],
             "scripts": []
           },
@@ -41,8 +41,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "8kB",
+                  "maximumError": "14kB"
                 }
               ],
               "outputHashing": "all"
@@ -85,7 +85,7 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles/main.scss"
             ],
             "scripts": []
           }

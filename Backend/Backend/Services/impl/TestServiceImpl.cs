@@ -514,6 +514,11 @@ namespace Backend.Services.impl
             question.PartId = partId;
             question.PassageId = passageId;
             question.QuestionText = dto.QuestionText;
+            question.QuestionType = string.IsNullOrWhiteSpace(dto.QuestionType)
+                ? "MultipleChoice"
+                : dto.QuestionType.Trim();
+            question.Explanation = dto.Explanation;
+            question.InteractivePayload = dto.InteractivePayload;
             question.ImageUrl = dto.ImageUrl;
             question.AudioUrl = dto.AudioUrl;
             question.OrderIndex = dto.OrderIndex ?? 0;

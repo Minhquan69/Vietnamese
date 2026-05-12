@@ -21,5 +21,7 @@ namespace Backend.Models
         public bool IsActive { get; set; }
 
         public Course? Course { get; set; }
+
+        public ICollection<Lesson>? Lessons { get; set; }
     }
 }

@@ -22,8 +22,8 @@ namespace Backend.Repository.impl
          */
         public async Task<bool> IsEmailExist(string email)
         {
-            return await _context.Users
-                .AnyAsync(u => u.Email == email);
+            var norm = email.Trim().ToLowerInvariant();
+            return await _context.Users.AnyAsync(u => u.Email.ToLower() == norm);
         }
 
         /*
@@ -65,6 +65,7 @@ namespace Backend.Repository.impl
         public async Task<User?> GetUserById(int userId)
         {
             return await _context.Users
+                .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
@@ -168,20 +169,31 @@ namespace Backend.Repository.impl
          */
         public async Task<dynamic?> GetUserWithRole(string email)
         {
+            var norm = email.Trim().ToLowerInvariant();
+            // LEFT JOIN: nếu RoleId trỏ tới role không tồn tại, INNER JOIN sẽ loại hết user → đăng nhập luôn 401.
             return await (
                 from user in _context.Users
-                join role in _context.Roles
-                    on user.RoleId equals role.RoleId
-                where user.Email == email
+                join role in _context.Roles on user.RoleId equals role.RoleId into roles
+                from role in roles.DefaultIfEmpty()
+                where user.Email.ToLower() == norm
                 select new
                 {
                     UserId = user.UserId,
                     Name = user.Name,
                     Email = user.Email,
                     PasswordHash = user.PasswordHash,
-                    RoleName = role.RoleName
+                    RoleName = role != null && !string.IsNullOrEmpty(role.RoleName) ? role.RoleName : "User",
+                    Status = user.Status,
                 })
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<User?> GetUserByEmailNormalized(string email)
+        {
+            var norm = email.Trim().ToLowerInvariant();
+            return await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == norm);
         }
     }
 }

@@ -1,0 +1,92 @@
+<div class="acms">
+  <div class="acms__panel">
+    <h2 class="acms__title" style="font-size: 1.15rem; margin-bottom: var(--space-3)">Quizzes</h2>
+
+    <div class="acms__filters">
+      <div class="acms__field" style="flex: 1; min-width: 200px">
+        <label class="acms__label" for="z-q">Name contains</label>
+        <input id="z-q" class="acms__input" [(ngModel)]="filterQ" />
+      </div>
+      <div class="acms__field" style="min-width: 140px">
+        <label class="acms__label" for="z-ref">Ref type</label>
+        <input id="z-ref" class="acms__input" [(ngModel)]="filterRefType" placeholder="e.g. unit" />
+      </div>
+      <label class="acms__check">
+        <input type="checkbox" [(ngModel)]="activeOnly" />
+        Active only
+      </label>
+      <div class="acms__field">
+        <label class="acms__label" for="z-ps">Page size</label>
+        <select id="z-ps" class="acms__select" [(ngModel)]="pageSize" (ngModelChange)="apply()">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="20">20</option>
+          <option [ngValue]="50">50</option>
+        </select>
+      </div>
+      <button type="button" class="acms__btn" (click)="apply()" [disabled]="loading()">Apply</button>
+    </div>
+
+    @if (loading()) {
+      <p class="acms__loading">Loading…</p>
+    } @else if (error()) {
+      <p class="acms__error">{{ error() }}</p>
+    } @else {
+      @if (result(); as res) {
+      <div class="acms__table-wrap">
+        <table class="acms__table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Ref</th>
+              <th>Pass %</th>
+              <th>Time limit</th>
+              <th>Created</th>
+              <th>Active</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of res.items; track row.quizId) {
+              <tr>
+                <td>{{ row.quizId }}</td>
+                <td>{{ row.quizName }}</td>
+                <td class="acms__muted">{{ row.refType }} #{{ row.refId }}</td>
+                <td>{{ row.passScore ?? '—' }}</td>
+                <td>{{ row.timeLimit ?? '—' }}</td>
+                <td class="acms__muted">{{ row.createdDate | date: 'medium' }}</td>
+                <td>
+                  <span [class]="row.isActive ? 'acms__pill acms__pill--on' : 'acms__pill acms__pill--off'">
+                    {{ row.isActive ? 'Yes' : 'No' }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="acms__pager">
+        <span>Page {{ res.page }} of {{ res.totalPages || 1 }} · {{ res.totalCount }} rows</span>
+        <div class="acms__pager-actions">
+          <button
+            type="button"
+            class="acms__btn acms__btn--ghost"
+            (click)="goPage(res.page - 1)"
+            [disabled]="res.page <= 1 || loading()"
+          >
+            Previous
+          </button>
+          <button
+            type="button"
+            class="acms__btn acms__btn--ghost"
+            (click)="goPage(res.page + 1)"
+            [disabled]="res.page >= res.totalPages || loading()"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    }
+    }
+  </div>
+</div>

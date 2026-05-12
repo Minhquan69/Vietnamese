@@ -1,0 +1,26 @@
+<div class="auth-split">
+  <aside class="auth-split__visual" aria-hidden="true">
+    <div class="auth-split__mesh"></div>
+    <div class="auth-split__orb auth-split__orb--a"></div>
+    <div class="auth-split__orb auth-split__orb--b"></div>
+    <div class="auth-split__copy">
+      <p class="auth-split__eyebrow">VietPhuong</p>
+      <h1 class="auth-split__headline">Learn Vietnamese with heart, structure, and AI.</h1>
+      <p class="auth-split__lede">
+        A calm, focused space to build fluency—designed like the best modern learning products.
+      </p>
+    </div>
+  </aside>
+
+  <main class="auth-split__form">
+    <ui-card variant="glass" padding="lg" class="auth-split__card vlp-hover-lift">
+      <h2 class="auth-split__title">{{ title }}</h2>
+      @if (subtitle) {
+        <p class="auth-split__subtitle text-muted">{{ subtitle }}</p>
+      }
+      <div class="auth-split__slot">
+        <ng-content />
+      </div>
+    </ui-card>
+  </main>
+</div>

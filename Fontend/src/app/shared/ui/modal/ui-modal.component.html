@@ -1,0 +1,29 @@
+@if (open) {
+  <div class="ui-modal__backdrop" (click)="onBackdropClick($event)" role="presentation">
+    <div
+      class="ui-modal"
+      [class.ui-modal--sm]="size === 'sm'"
+      [class.ui-modal--md]="size === 'md'"
+      [class.ui-modal--lg]="size === 'lg'"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="title ? 'ui-modal-title' : null"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="ui-modal__header">
+        @if (title) {
+          <h2 id="ui-modal-title" class="ui-modal__title">{{ title }}</h2>
+        }
+        <button type="button" class="ui-modal__close" (click)="close()" aria-label="Close">
+          ×
+        </button>
+      </header>
+      <div class="ui-modal__body">
+        <ng-content />
+      </div>
+      <footer class="ui-modal__footer">
+        <ng-content select=".modal-footer" />
+      </footer>
+    </div>
+  </div>
+}

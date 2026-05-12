@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient,HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, catchError, map } from 'rxjs';
 
-import { LoginResult } from '../models/login-result.model';
 import { UserResult } from '../models/user-result.model';
 import { environment } from '../../../environments/environment';
+import type { ApiEnvelope } from '../../core/auth/auth.types';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -13,22 +14,34 @@ export class AccountService {
 
   constructor(private http: HttpClient) {}
 
-  login(data: any): Observable<LoginResult> {
-    return this.http.post<LoginResult>(`${this.apiUrl}/login`, data);
-  }
-  register(data: any): Observable<LoginResult> {
-    return this.http.post<LoginResult>(`${this.apiUrl}/register`, data);
-  }
   getCurrentUser(): Observable<UserResult> {
-    return this.http.get<UserResult>(`${this.apiUrl}/me`);
+    return this.http
+      .get<ApiEnvelope<UserResult>>(`${environment.apiV1Url}/auth/profile`)
+      .pipe(
+        map((r) => r.data),
+        catchError(() => this.http.get<UserResult>(`${this.apiUrl}/me`)),
+      );
   }
-  changePassword(data: any): Observable<string> {
+
+  changePassword(data: { oldPassword: string; newPassword: string }): Observable<string> {
     return this.http.put(`${this.apiUrl}/change-password`, data, {
       responseType: 'text',
     });
   }
-  updateProfile(data: any): Observable<any> {
+
+  updateProfile(data: { name: string; email: string }): Observable<unknown> {
     return this.http.put(`${this.apiUrl}/update-profile`, data);
+  }
+
+  uploadAvatar(file: File): Observable<{ avatarUrl: string }> {
+    const fd = new FormData();
+    fd.append('file', file);
+    return this.http
+      .post<ApiEnvelope<{ avatarUrl: string }>>(
+        `${environment.apiV1Url}/auth/me/avatar`,
+        fd,
+      )
+      .pipe(map((r) => r.data));
   }
 
   getUsers(
@@ -37,7 +50,7 @@ export class AccountService {
     roleId?: number,
     page: number = 1,
     pageSize: number = 10,
-  ): Observable<any> {
+  ): Observable<unknown> {
     let params = new HttpParams().set('page', page).set('pageSize', pageSize);
 
     if (email) params = params.set('email', email);

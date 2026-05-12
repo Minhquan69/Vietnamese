@@ -12,5 +12,7 @@ namespace Backend.Models
         public int Status { get; set; }
 
         public ICollection<Transcript>? Transcripts { get; set; }
+
+        public ICollection<VideoVocabulary>? VideoVocabularies { get; set; }
     }
 }

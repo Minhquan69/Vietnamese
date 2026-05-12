@@ -1,39 +1,65 @@
-<div class="login-bg">
+<app-auth-page title="Create your account" subtitle="Join thousands of learners building real Vietnamese fluency.">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+    @if (error()) {
+      <div class="auth-alert" role="alert">{{ error() }}</div>
+    }
 
-    <div class="circle c1"></div>
-    <div class="circle c2"></div>
-    <div class="circle c3"></div>
+    <ui-input
+      label="Full name"
+      autocomplete="name"
+      formControlName="name"
+      [error]="
+        form.controls.name.touched && form.controls.name.invalid
+          ? 'Enter your name (2–120 characters)'
+          : ''
+      "
+    />
 
-    <div class="login-card">
+    <ui-input
+      label="Email"
+      type="email"
+      autocomplete="email"
+      formControlName="email"
+      [error]="
+        form.controls.email.touched && form.controls.email.invalid
+          ? 'Enter a valid email'
+          : ''
+      "
+    />
 
-        <h2>Create Account</h2>
-        <p class="subtitle">
-            Join VietPhuong and start learning Vietnamese today
-        </p>
+    <ui-input
+      label="Password"
+      type="password"
+      autocomplete="new-password"
+      formControlName="password"
+      hint="At least 8 characters with letters and numbers"
+      [error]="
+        form.controls.password.touched && form.controls.password.invalid
+          ? 'Use 8+ characters with letters and numbers'
+          : ''
+      "
+    />
 
-        <input type="text" placeholder="Full Name" [(ngModel)]="name" />
+    <ui-input
+      label="Confirm password"
+      type="password"
+      autocomplete="new-password"
+      formControlName="confirmPassword"
+      [error]="confirmPasswordError()"
+    />
 
-        <input type="text" placeholder="Email" [(ngModel)]="email" />
+    <label class="auth-check">
+      <input type="checkbox" formControlName="agree" />
+      <span>I agree to the terms and learning data policy</span>
+    </label>
 
-        <input type="password" placeholder="Password" [(ngModel)]="password" />
+    <ui-button variant="primary" type="submit" [block]="true" [loading]="loading()">
+      Create account
+    </ui-button>
 
-        <input type="password" placeholder="Confirm Password" [(ngModel)]="confirmPassword" />
-
-        <div class="login-options">
-            <label>
-                <input type="checkbox" [(ngModel)]="agree"> I agree to terms
-            </label>
-        </div>
-
-        <button (click)="register()">
-            Register
-        </button>
-
-        <div class="create">
-            Already have an account?
-            <a routerLink="/login">Login</a>
-        </div>
-
-    </div>
-
-</div>
+    <p class="auth-footer text-muted">
+      Already learning with us?
+      <a routerLink="/login" class="auth-link">Sign in</a>
+    </p>
+  </form>
+</app-auth-page>

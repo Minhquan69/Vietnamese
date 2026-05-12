@@ -1,0 +1,33 @@
+<div
+  class="app-shell"
+  [class.app-shell--nav-open]="navOpen()"
+>
+  <div
+    class="app-shell__backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Close menu"
+    (click)="closeNav()"
+    (keydown.enter)="closeNav()"
+  ></div>
+
+  <div class="app-shell__sidebar">
+    <app-shell-sidebar
+      [items]="visibleNav()"
+      (navigate)="closeNav()"
+    />
+  </div>
+
+  <div class="app-shell__main">
+    <app-shell-topbar
+      [pageTitle]="pageTitle()"
+      [userLabel]="userName()"
+      [isLogin]="isLogin()"
+      (menuToggle)="toggleNav()"
+      (logout)="onLogout()"
+    />
+    <main class="app-shell__content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

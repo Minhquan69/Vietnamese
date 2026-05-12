@@ -1,0 +1,25 @@
+.ui-skeleton {
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-subtle) 0%,
+    var(--color-surface) 45%,
+    var(--color-bg-subtle) 90%
+  );
+  background-size: 200% 100%;
+  animation: vlp-shimmer 1.4s ease-in-out infinite;
+}
+
+.ui-skeleton--circle {
+  border-radius: 50%;
+}
+
+.ui-skeleton--text {
+  border-radius: var(--radius-sm);
+}
+
+.ui-skeleton--rect {
+  border-radius: var(--radius-md);
+}

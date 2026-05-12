@@ -7,6 +7,8 @@ namespace Backend.Repository
     {
         Task SaveUserAnswer(UserAnswer userAnswer);
 
+        Task AddUserAnswers(IEnumerable<UserAnswer> rows);
+
         Task<List<UserAnswerDTO>> GetUserAnswers(int userId, int quizId);
         Task Save();
 

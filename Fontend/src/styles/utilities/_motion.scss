@@ -1,0 +1,43 @@
+@keyframes vlp-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes vlp-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes vlp-pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 24px 4px rgba(99, 102, 241, 0.2);
+  }
+}
+
+.vlp-hover-lift {
+  transition: transform var(--duration-normal) var(--ease-spring),
+    box-shadow var(--duration-normal) var(--ease-out-expo);
+}
+
+.vlp-hover-lift:hover {
+  transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vlp-hover-lift:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,112 @@
+<div class="tutor">
+  <div class="tutor__bg" aria-hidden="true"></div>
+
+  <header class="tutor__head">
+    <div>
+      <p class="tutor__eyebrow">AI tutor · Linh</p>
+      <h1 class="tutor__title">Practice Vietnamese</h1>
+      <p class="tutor__lead">
+        Conversation, grammar fixes, natural rephrasing, and roleplay — pick a scenario for your next reply.
+      </p>
+    </div>
+    <div class="tutor__head-actions">
+      <button type="button" class="tutor__icon-btn" (click)="toggleSidebar()" aria-label="History">
+        ☰
+      </button>
+      <button type="button" class="tutor__ghost" (click)="newChat()">New chat</button>
+      <a routerLink="/dashboard" class="tutor__link">Overview</a>
+    </div>
+  </header>
+
+  <div class="tutor__layout" [class.tutor__layout--drawer]="sidebarOpen()">
+    @if (sidebarOpen()) {
+      <div class="tutor__backdrop" (click)="sidebarOpen.set(false)" aria-hidden="true"></div>
+    }
+    <aside class="tutor__drawer" [class.tutor__drawer--open]="sidebarOpen()">
+      <h2 class="tutor__drawer-title">History</h2>
+      @if (historyLoading()) {
+        <p class="tutor__muted">Loading…</p>
+      } @else if (history().length === 0) {
+        <p class="tutor__muted">No past chats yet.</p>
+      } @else {
+        <ul class="tutor__hist">
+          @for (h of history(); track h.conversationId) {
+            <li>
+              <button type="button" class="tutor__hist-item" (click)="openConversation(h.conversationId)">
+                <span class="tutor__hist-title">{{ h.title }}</span>
+                <span class="tutor__hist-date">{{ h.updatedUtc | date: 'short' }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </aside>
+
+    <div class="tutor__main">
+      <div class="tutor__chips" aria-label="Scenarios for new chat">
+        @for (s of scenarios; track s.key) {
+          <button
+            type="button"
+            class="tutor__chip"
+            [class.tutor__chip--on]="scenarioKey() === s.key && conversationId() === null"
+            [disabled]="conversationId() !== null"
+            (click)="pickScenario(s.key)"
+          >
+            {{ s.label }}
+          </button>
+        }
+      </div>
+      @if (conversationId() === null) {
+        <p class="tutor__hint">Scenario applies to this new chat only.</p>
+      }
+
+      @if (error()) {
+        <p class="tutor__err">{{ error() }}</p>
+      }
+
+      <div class="tutor__scroll" #scrollArea>
+        <div class="tutor__messages">
+          @for (line of lines(); track $index) {
+            <div class="tutor__row" [class.tutor__row--user]="line.role === 'user'">
+              <div class="tutor__bubble" [class.tutor__bubble--user]="line.role === 'user'">
+                <span class="tutor__who">{{ line.role === 'user' ? 'You' : 'Linh' }}</span>
+                <div class="tutor__text">{{ line.content }}</div>
+              </div>
+            </div>
+          }
+          @if (sending()) {
+            <div class="tutor__row">
+              <div class="tutor__bubble tutor__bubble--typing">
+                <span class="tutor__who">Linh</span>
+                <span class="tutor__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (suggestions().length) {
+        <div class="tutor__suggest" aria-label="Suggestions">
+          @for (c of suggestions(); track c) {
+            <button type="button" class="tutor__suggest-chip" (click)="applyChip(c)">{{ c }}</button>
+          }
+        </div>
+      }
+
+      <div class="tutor__composer">
+        <textarea
+          class="tutor__input"
+          rows="2"
+          placeholder="Write in Vietnamese or English… (Enter to send, Shift+Enter newline)"
+          [ngModel]="draft()"
+          (ngModelChange)="draft.set($event)"
+          (keydown)="onKeydown($event)"
+          [disabled]="sending()"
+        ></textarea>
+        <button type="button" class="tutor__send" [disabled]="sending() || !draft().trim()" (click)="send()">
+          Send
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

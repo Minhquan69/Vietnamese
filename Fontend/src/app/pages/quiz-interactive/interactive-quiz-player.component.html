@@ -1,0 +1,252 @@
+<div class="iq">
+  <div class="iq__bg" aria-hidden="true"></div>
+
+  @if (error()) {
+    <p class="iq__error">{{ error() }}</p>
+    <a routerLink="/dashboard" class="iq__link">Back to overview</a>
+  }
+
+  @if (phase() === 'loading') {
+    <p class="iq__hint">Loading quiz…</p>
+  }
+
+  @if (phase() === 'ready' && pkg(); as pack) {
+    <header class="iq__head">
+      <div>
+        <p class="iq__eyebrow">Interactive session</p>
+        <h1 class="iq__title">{{ pack.quizName }}</h1>
+      </div>
+      @if (timerSeconds() !== null) {
+        <div class="iq__timer" [class.iq__timer--warn]="(timerSeconds() ?? 0) < 60">
+          {{ timerLabel() }}
+        </div>
+      }
+    </header>
+
+    <div class="iq__progress" aria-hidden="true">
+      <div class="iq__progress-fill" [style.width.%]="progressPercent()"></div>
+    </div>
+    <p class="iq__meta">
+      Question {{ index() + 1 }} / {{ pack.questions.length }}
+    </p>
+
+    @if (current(); as q) {
+      <article class="iq-card" [@cardAnim]="q.questionId">
+        <p class="iq-card__type">{{ q.questionType }}</p>
+        <h2 class="iq-card__prompt">{{ q.questionText }}</h2>
+
+        @if (imageUrl(q.imageUrl); as src) {
+          <img class="iq-card__img" [src]="src" alt="" />
+        }
+
+        @if (q.questionType === 'Listening' || q.audioUrl) {
+          @if (resolveAudio(q.audioUrl); as au) {
+            <audio class="iq-card__audio" controls [src]="au"></audio>
+          }
+        }
+
+        @switch (q.questionType) {
+          @case ('FillBlank') {
+            <div class="iq-fill">
+              @for (k of blankKeys(q.interactivePayload); track k) {
+                <label class="iq-fill__row">
+                  <span class="iq-fill__key">{{ k }}</span>
+                  <input
+                    class="iq-input"
+                    type="text"
+                    autocomplete="off"
+                    [ngModel]="fillValues()[q.questionId]?.[k] ?? ''"
+                    (ngModelChange)="updateBlank(q.questionId, k, $event)"
+                  />
+                </label>
+              }
+            </div>
+          }
+          @case ('ReorderSentence') {
+            <div
+              class="iq-reorder"
+              (dragover)="$event.preventDefault()"
+            >
+              @for (aid of reorderOrder()[q.questionId] ?? []; track aid) {
+                <div
+                  class="iq-reorder__chip"
+                  draggable="true"
+                  (dragstart)="onReorderDragStart(q, aid, $event)"
+                  (drop)="onReorderDrop(q, aid, $event)"
+                  (dragover)="$event.preventDefault()"
+                >
+                  {{ getAnswerText(q, aid) }}
+                </div>
+              }
+            </div>
+            <p class="iq-card__hint">Drag chips to reorder the sentence.</p>
+          }
+          @case ('DragDrop') {
+            <div class="iq-dd">
+              <div class="iq-dd__slots">
+                @for (slot of dragSlotKeys(q.interactivePayload); track slot) {
+                  <div
+                    class="iq-dd__slot"
+                    tabindex="0"
+                    role="group"
+                    (dragover)="onSlotDragOver($event)"
+                    (drop)="onSlotDrop(q, slot, $event)"
+                    (click)="tapSlot(q, slot)"
+                  >
+                    <span class="iq-dd__slot-label">{{ slot }}</span>
+                    @if (dragAnswerForSlot(q, slot); as chosen) {
+                      <span class="iq-dd__pill">
+                        {{ getAnswerText(q, chosen) }}
+                        <span
+                          class="iq-dd__clear"
+                          tabindex="0"
+                          role="button"
+                          (click)="setDrag(q, slot, null); $event.stopPropagation()"
+                          >×</span
+                        >
+                      </span>
+                    } @else {
+                      <span class="iq-dd__empty">Tap or drop</span>
+                    }
+                  </div>
+                }
+              </div>
+              <div class="iq-dd__pool" (dragover)="onSlotDragOver($event)">
+                <p class="iq-dd__pool-title">Word bank</p>
+                @for (a of poolAnswers(q); track a.answerId) {
+                  <button
+                    type="button"
+                    class="iq-dd__pill iq-dd__pill--pool"
+                    draggable="true"
+                    (dragstart)="startPoolDrag($event, a.answerId)"
+                    (click)="tapPoolAnswer(q, a.answerId)"
+                  >
+                    {{ a.answerText }}
+                  </button>
+                }
+              </div>
+            </div>
+            <p class="iq-card__hint">
+              Drag into a slot, or tap a word then tap a slot. Tap × to clear.
+            </p>
+          }
+          @default {
+            <ul class="iq-mc">
+              @for (a of q.answers; track a.answerId) {
+                <li>
+                  <button
+                    type="button"
+                    class="iq-mc__opt"
+                    [class.iq-mc__opt--on]="mcPick()[q.questionId] === a.answerId"
+                    (click)="pickMc(q, a.answerId)"
+                  >
+                    {{ a.answerText }}
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+        }
+
+        <footer class="iq-card__foot">
+          <button type="button" class="iq-btn iq-btn--ghost" (click)="prev()" [disabled]="index() === 0">
+            Back
+          </button>
+          @if (index() < pack.questions.length - 1) {
+            <button type="button" class="iq-btn iq-btn--primary" (click)="next()">Next</button>
+          } @else {
+            <button
+              type="button"
+              class="iq-btn iq-btn--primary"
+              [disabled]="submitting()"
+              (click)="finish()"
+            >
+              Submit quiz
+            </button>
+          }
+        </footer>
+      </article>
+    }
+  }
+
+  @if (phase() === 'results' && result(); as res) {
+    <section class="iq-results" @feedbackAnim>
+      <h2 class="iq-results__title">Results</h2>
+      <p class="iq-results__score">
+        Score <strong>{{ res.scorePercent | number: '1.0-1' }}%</strong>
+        @if (res.passed) {
+          <span class="iq-badge iq-badge--pass">Passed</span>
+        } @else {
+          <span class="iq-badge iq-badge--fail">Keep practicing</span>
+        }
+      </p>
+      <div class="iq-results__stats">
+        <span>Correct {{ res.correctCount }}</span>
+        <span>Wrong {{ res.wrongCount }}</span>
+        <span>Skipped {{ res.skippedCount }}</span>
+      </div>
+
+      <div class="iq-results__breakdown">
+        @for (row of res.items; track row.questionId) {
+          <div
+            class="iq-row"
+            [class.iq-row--ok]="row.correct && !row.skipped"
+            [class.iq-row--bad]="!row.correct && !row.skipped"
+            [class.iq-row--skip]="row.skipped"
+          >
+            <span class="iq-row__id">Q{{ row.questionId }}</span>
+            <span class="iq-row__type">{{ row.questionType }}</span>
+            @if (row.skipped) {
+              <span class="iq-row__tag">Skipped</span>
+            } @else if (row.correct) {
+              <span class="iq-row__tag">Correct</span>
+            } @else {
+              <span class="iq-row__tag">Incorrect</span>
+            }
+            @if (row.explanation) {
+              <p class="iq-row__exp">{{ row.explanation }}</p>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="iq-results__actions">
+        <button type="button" class="iq-btn iq-btn--ghost" (click)="toggleAnalytics()">
+          {{ showAnalytics() ? 'Hide' : 'Show' }} analytics
+        </button>
+        <button type="button" class="iq-btn iq-btn--primary" (click)="retry()">Try again</button>
+        <a routerLink="/dashboard" class="iq-link">Overview</a>
+      </div>
+
+      @if (showAnalytics()) {
+        <div class="iq-analytics">
+          <h3>Recent attempts (this quiz)</h3>
+          @if (analytics().length === 0) {
+            <p class="iq-hint">No history yet.</p>
+          } @else {
+            <table class="iq-table">
+              <thead>
+                <tr>
+                  <th>When</th>
+                  <th>Score</th>
+                  <th>Time</th>
+                  <th>C / W / S</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (a of analytics(); track a.quizAttemptId) {
+                  <tr>
+                    <td>{{ a.submittedUtc | date: 'medium' }}</td>
+                    <td>{{ a.scorePercent | number: '1.0-1' }}%</td>
+                    <td>{{ a.durationSeconds }}s</td>
+                    <td>{{ a.correctCount }} / {{ a.wrongCount }} / {{ a.skippedCount }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+      }
+    </section>
+  }
+</div>

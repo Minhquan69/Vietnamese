@@ -74,7 +74,7 @@ namespace Backend.Repository.impl
             var answerIds = await _context.Answers.Where(a => questionIds.Contains(a.QuestionId)).Select(a => a.AnswerId).ToListAsync();
 
             // Thực hiện xóa trực tiếp tại DB theo thứ tự ngược để tránh lỗi ràng buộc (nếu không có Cascade)
-            await _context.UserAnswer.Where(ua => answerIds.Contains(ua.AnswerId)).ExecuteDeleteAsync();
+            await _context.UserAnswer.Where(ua => ua.AnswerId != null && answerIds.Contains(ua.AnswerId.Value)).ExecuteDeleteAsync();
             await _context.UserQuiz.Where(uq => quizIds.Contains(uq.QuizId)).ExecuteDeleteAsync();
             await _context.Answers.Where(a => answerIds.Contains(a.AnswerId)).ExecuteDeleteAsync();
             await _context.Questions.Where(q => questionIds.Contains(q.QuestionId)).ExecuteDeleteAsync();

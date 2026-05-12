@@ -1,0 +1,9 @@
+<span
+  class="ui-skeleton"
+  [class.ui-skeleton--text]="variant === 'text'"
+  [class.ui-skeleton--rect]="variant === 'rect'"
+  [class.ui-skeleton--circle]="variant === 'circle'"
+  [style.width]="variant === 'circle' ? height : width"
+  [style.height]="height"
+  aria-hidden="true"
+></span>

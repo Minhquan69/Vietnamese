@@ -24,6 +24,7 @@
             public const string Level = "LEVEL_JUMP";
             public const string Course = "COURSE_JUMP";
             public const string Unit = "UNIT";
+            public const string Lesson = "LESSON";
             public const string Placement = "PLACEMENT";
         }
         /*

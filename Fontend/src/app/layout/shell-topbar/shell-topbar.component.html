@@ -1,0 +1,34 @@
+<header class="topbar">
+  <div class="topbar__left">
+    <button type="button" class="topbar__icon-btn topbar__menu" (click)="onMenu()" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="topbar__titles">
+      <p class="topbar__eyebrow">Workspace</p>
+      <h1 class="topbar__title">{{ pageTitle }}</h1>
+    </div>
+  </div>
+
+  <div class="topbar__right">
+    <div class="topbar__pill" aria-hidden="true">
+      <span class="topbar__dot"></span>
+      <span>AI tutor</span>
+    </div>
+
+    <button type="button" class="topbar__icon-btn" (click)="toggleTheme()" [attr.aria-label]="theme.mode() === 'dark' ? 'Light mode' : 'Dark mode'">
+      @if (theme.mode() === 'dark') {
+        <span class="topbar__sun">☀</span>
+      } @else {
+        <span class="topbar__moon">☾</span>
+      }
+    </button>
+
+    @if (isLogin && userLabel) {
+      <div class="topbar__user">
+        <span class="topbar__avatar" aria-hidden="true">{{ userLabel.slice(0, 1).toUpperCase() }}</span>
+        <span class="topbar__user-name">{{ userLabel }}</span>
+      </div>
+      <button type="button" class="topbar__ghost" (click)="onLogout()">Log out</button>
+    }
+  </div>
+</header>

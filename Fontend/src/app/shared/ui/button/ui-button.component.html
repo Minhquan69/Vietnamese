@@ -1,0 +1,46 @@
+@if (routerLink) {
+  <a
+    [routerLink]="routerLink"
+    [queryParams]="queryParams"
+    class="ui-btn"
+    [class.ui-btn--primary]="variant === 'primary'"
+    [class.ui-btn--secondary]="variant === 'secondary'"
+    [class.ui-btn--ghost]="variant === 'ghost'"
+    [class.ui-btn--danger]="variant === 'danger'"
+    [class.ui-btn--sm]="size === 'sm'"
+    [class.ui-btn--md]="size === 'md'"
+    [class.ui-btn--lg]="size === 'lg'"
+    [class.ui-btn--block]="block"
+    [class.ui-btn--disabled]="disabled || loading"
+    [attr.aria-disabled]="disabled || loading"
+    [attr.tabindex]="disabled || loading ? -1 : 0"
+  >
+    @if (loading) {
+      <span class="ui-btn__spinner" aria-hidden="true"></span>
+    }
+    <span class="ui-btn__content" [class.ui-btn__content--hidden]="loading">
+      <ng-content />
+    </span>
+  </a>
+} @else {
+  <button
+    [attr.type]="type"
+    class="ui-btn"
+    [class.ui-btn--primary]="variant === 'primary'"
+    [class.ui-btn--secondary]="variant === 'secondary'"
+    [class.ui-btn--ghost]="variant === 'ghost'"
+    [class.ui-btn--danger]="variant === 'danger'"
+    [class.ui-btn--sm]="size === 'sm'"
+    [class.ui-btn--md]="size === 'md'"
+    [class.ui-btn--lg]="size === 'lg'"
+    [class.ui-btn--block]="block"
+    [disabled]="disabled || loading"
+  >
+    @if (loading) {
+      <span class="ui-btn__spinner" aria-hidden="true"></span>
+    }
+    <span class="ui-btn__content" [class.ui-btn__content--hidden]="loading">
+      <ng-content />
+    </span>
+  </button>
+}

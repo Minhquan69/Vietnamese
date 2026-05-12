@@ -1,0 +1,82 @@
+<div class="acms">
+  @if (loading()) {
+    <p class="acms__loading">Loading analytics…</p>
+  } @else if (error()) {
+    <p class="acms__error">{{ error() }}</p>
+    <button type="button" class="acms__btn" (click)="refresh()">Retry</button>
+  } @else {
+    @if (summary(); as s) {
+      <div class="acms__stat-grid">
+      <article class="acms__stat">
+        <p class="acms__stat-value">{{ s.totals.usersTotal }}</p>
+        <p class="acms__stat-label">Users</p>
+      </article>
+      <article class="acms__stat">
+        <p class="acms__stat-value">{{ s.totals.usersActive }}</p>
+        <p class="acms__stat-label">Active users</p>
+      </article>
+      <article class="acms__stat">
+        <p class="acms__stat-value">{{ s.totals.coursesTotal }}</p>
+        <p class="acms__stat-label">Courses</p>
+      </article>
+      <article class="acms__stat">
+        <p class="acms__stat-value">{{ s.totals.lessonsTotal }}</p>
+        <p class="acms__stat-label">Lessons</p>
+      </article>
+      <article class="acms__stat">
+        <p class="acms__stat-value">{{ s.totals.vocabulariesTotal }}</p>
+        <p class="acms__stat-label">Vocabulary</p>
+      </article>
+      <article class="acms__stat">
+        <p class="acms__stat-value">{{ s.totals.quizzesTotal }}</p>
+        <p class="acms__stat-label">Quizzes</p>
+      </article>
+      <article class="acms__stat">
+        <p class="acms__stat-value">{{ s.totals.quizAttemptsLast30Days }}</p>
+        <p class="acms__stat-label">Quiz attempts (30d)</p>
+      </article>
+      <article class="acms__stat">
+        <p class="acms__stat-value">{{ s.totals.speakingAttemptsLast30Days }}</p>
+        <p class="acms__stat-label">Speaking sessions (30d)</p>
+      </article>
+    </div>
+
+    <div class="acms__charts">
+      <div class="acms__panel acms__chart">
+        <h3 class="acms__chart-title">Passed quizzes per day (14 days)</h3>
+        <div class="acms__bars" role="img" aria-label="Quiz completions trend">
+          @for (p of s.activityLast14Days; track p.date) {
+            <div class="acms__bar-col">
+              <div
+                class="acms__bar"
+                [style.height.%]="barQuizPct(p.quizCompletions)"
+                [title]="p.date + ': ' + p.quizCompletions"
+              ></div>
+              <span class="acms__bar-label">{{ shortDate(p) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="acms__panel acms__chart">
+        <h3 class="acms__chart-title">Speaking sessions per day (14 days)</h3>
+        <div class="acms__bars" role="img" aria-label="Speaking sessions trend">
+          @for (p of s.activityLast14Days; track p.date) {
+            <div class="acms__bar-col">
+              <div
+                class="acms__bar acms__bar--sec"
+                [style.height.%]="barSpeakPct(p.speakingSessions)"
+                [title]="p.date + ': ' + p.speakingSessions"
+              ></div>
+              <span class="acms__bar-label">{{ shortDate(p) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: var(--space-3)">
+      <button type="button" class="acms__btn acms__btn--ghost" (click)="refresh()">Refresh</button>
+    </div>
+    }
+  }
+</div>

@@ -1,0 +1,23 @@
+<div class="ui-field" [class.ui-field--error]="!!error">
+  @if (label) {
+    <label class="ui-field__label" [attr.for]="id">{{ label }}</label>
+  }
+  <div class="ui-field__control">
+    <input
+      [id]="id"
+      [type]="type"
+      [placeholder]="placeholder"
+      [attr.autocomplete]="autocomplete || null"
+      [disabled]="disabled"
+      [value]="value"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+      class="ui-field__input"
+    />
+  </div>
+  @if (error) {
+    <p class="ui-field__msg ui-field__msg--error">{{ error }}</p>
+  } @else if (hint) {
+    <p class="ui-field__msg">{{ hint }}</p>
+  }
+</div>

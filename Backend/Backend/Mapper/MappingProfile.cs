@@ -10,12 +10,6 @@ namespace Backend.Mapper
         {
             CreateMap<Video, VideoDTO>().ReverseMap();
 
-            CreateMap<Transcript, TranscriptDTO>()
-                .ForMember(dest => dest.YoutubeId,
-                    opt => opt.MapFrom(src =>
-                        src.Video != null ? src.Video.YoutubeId : null))
-                .ReverseMap();
-
             CreateMap<Level, LevelDTO>().ReverseMap();
 
             CreateMap<Course, CourseDTO>().ReverseMap();

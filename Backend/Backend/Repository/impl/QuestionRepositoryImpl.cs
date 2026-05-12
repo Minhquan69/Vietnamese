@@ -100,12 +100,12 @@ namespace Backend.Repository.impl
         {
             if (ids == null || !ids.Any()) return;
 
+            await _context.UserAnswer.Where(x => ids.Contains(x.QuestionId)).ExecuteDeleteAsync();
+
             var answerIds = await _context.Answers
                 .Where(x => ids.Contains(x.QuestionId))
                 .Select(x => x.AnswerId)
                 .ToListAsync();
-
-            await _context.UserAnswer.Where(x => answerIds.Contains(x.AnswerId)).ExecuteDeleteAsync();
             await _context.Answers.Where(x => ids.Contains(x.QuestionId)).ExecuteDeleteAsync();
             await _context.Questions.Where(x => ids.Contains(x.QuestionId)).ExecuteDeleteAsync();
         }

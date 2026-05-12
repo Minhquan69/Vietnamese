@@ -11,11 +11,14 @@ namespace Backend.Controllers
     public class LevelController : ControllerBase
     {
         private readonly LearningService _learningService;
+        private readonly LearningDashboardService _learningDashboardService;
 
-        public LevelController(LearningService learningService)
+        public LevelController(
+            LearningService learningService,
+            LearningDashboardService learningDashboardService)
         {
             _learningService = learningService;
-
+            _learningDashboardService = learningDashboardService;
         }
 
         // level
@@ -236,6 +239,15 @@ namespace Backend.Controllers
         {
             return Ok(await _learningService.GetMyProgress());
         }
-           
+
+        /*
+         * Tổng hợp dashboard học tập (XP, streak, biểu đồ, thử thách)
+         */
+        [Authorize]
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> GetLearningDashboard()
+        {
+            return Ok(await _learningDashboardService.GetDashboardAsync());
+        }
     }
 }

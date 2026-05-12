@@ -5,6 +5,7 @@ import { LevelDTO } from '../models/level.model';
 import { CourseDTO } from '../models/course.model';
 import { UnitDTO } from '../models/unit.model';
 import { environment } from '../../../environments/environment';
+import type { LearningDashboardDto } from '../../pages/dashboard/learning-dashboard.model';
 
 @Injectable({
   providedIn: 'root',
@@ -94,6 +95,8 @@ export class LearningService {
       this.getOptions(),
     );
   }
-  
-  
+
+  getLearningDashboard(): Observable<LearningDashboardDto> {
+    return this.http.get<LearningDashboardDto>(`${this.apiUrl}/dashboard`);
+  }
 }

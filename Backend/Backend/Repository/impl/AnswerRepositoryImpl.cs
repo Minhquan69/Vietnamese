@@ -71,7 +71,7 @@ namespace Backend.Repository.impl
             if (ids == null || !ids.Any()) return;
 
             await _context.UserAnswer
-                .Where(x => ids.Contains(x.AnswerId))
+                .Where(x => x.AnswerId != null && ids.Contains(x.AnswerId.Value))
                 .ExecuteDeleteAsync();
 
             await _context.Answers

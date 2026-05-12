@@ -1,0 +1,119 @@
+@if (mode() === 'loading') {
+  <p class="vl-hint">Preparing immersive player…</p>
+}
+
+@if (mode() === 'fallback') {
+  <section class="vl-fallback">
+    @if (fallbackEmbed(); as src) {
+      <div class="vl-frame">
+        <iframe [src]="src" title="Lesson video" allowfullscreen></iframe>
+      </div>
+    }
+    @if (error()) {
+      <p class="vl-hint">{{ error() }}</p>
+    }
+  </section>
+}
+
+@if (mode() === 'immersive' && session(); as S) {
+  <section class="vl-shell" [attr.aria-label]="title || 'Video lesson'">
+    <div class="vl-main">
+      <div class="vl-player-wrap">
+        <div [attr.id]="playerDomId()" class="vl-player-host"></div>
+        <div class="vl-sub-overlay" aria-live="polite">
+          @if (activeCue(); as cue) {
+            <div class="vl-sub-card">
+              <p class="vl-sub-label">Now</p>
+              <p class="vl-sub-text">
+                @for (tok of tokensForCue(cue); track $index) {
+                  <button
+                    type="button"
+                    class="vl-w"
+                    [class.vl-w--dict]="tok.vocabularyId"
+                    (click)="openToken(tok)"
+                  >
+                    {{ tok.text }}
+                  </button>
+                } @empty {
+                  {{ cue.sentence }}
+                }
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (S.linkedVocabulary.length) {
+        <div class="vl-linked">
+          <span class="vl-linked__label">Course vocabulary</span>
+          <div class="vl-linked__chips">
+            @for (v of S.linkedVocabulary; track v.vocabularyId) {
+              <button type="button" class="vl-chip" (click)="openChip(v)">
+                {{ v.word }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <aside class="vl-side">
+      <h3 class="vl-side__title">Transcript</h3>
+      <ul class="vl-cues">
+        @for (c of S.transcripts; track c.transcriptId) {
+          <li>
+            <button
+              type="button"
+              class="vl-cue"
+              [class.vl-cue--on]="sidebarCueActive(c)"
+              (click)="seekToCue(c)"
+            >
+              <span class="vl-cue__t">{{ c.startTime | number: '1.0-1' }}s</span>
+              <span class="vl-cue__tx">{{ c.sentence }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+    </aside>
+  </section>
+}
+
+@if (dictOpen()) {
+  <div class="vl-dict-backdrop" (click)="closeDict()"></div>
+  <dialog class="vl-dict" open (click)="$event.stopPropagation()">
+    <button type="button" class="vl-dict__x" (click)="closeDict()" aria-label="Close">×</button>
+    @if (dictLoading()) {
+      <p>Looking up…</p>
+    } @else {
+      @if (dictCard(); as card) {
+        <h4 class="vl-dict__word">{{ card.word }}</h4>
+        @if (card.ipa) {
+          <p class="vl-dict__ipa">/{{ card.ipa }}/</p>
+        }
+        @if (resolveAudio(card.audioUrl); as au) {
+          <audio controls [src]="au"></audio>
+        }
+        @if (card.meaningEn) {
+          <p>{{ card.meaningEn }}</p>
+        }
+        @if (card.contextNote) {
+          <p class="vl-dict__ctx">{{ card.contextNote }}</p>
+        }
+        @if (loggedIn()) {
+          <button
+            type="button"
+            class="vl-dict__save"
+            [disabled]="saving() || linking()"
+            (click)="saveWord(card, activeCue())"
+          >
+            Save &amp; link to this video
+          </button>
+        } @else {
+          <p class="vl-dict__hint">Sign in to save words from subtitles.</p>
+        }
+      } @else {
+        <p>No dictionary entry yet — try another tap.</p>
+      }
+    }
+  </dialog>
+}

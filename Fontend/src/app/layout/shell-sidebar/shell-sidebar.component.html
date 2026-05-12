@@ -1,0 +1,28 @@
+<div class="sidebar">
+  <div class="sidebar__brand">
+    <div class="sidebar__logo" aria-hidden="true">
+      <span class="sidebar__logo-mark">VP</span>
+    </div>
+    <div class="sidebar__titles">
+      <span class="sidebar__name">{{ appName }}</span>
+      <span class="sidebar__tag">{{ tagline }}</span>
+    </div>
+  </div>
+
+  <nav class="sidebar__nav" aria-label="Main">
+    @for (item of items; track item.path) {
+      <a
+        class="sidebar__link"
+        [routerLink]="item.path"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="onNav()"
+      >
+        <span class="sidebar__icon" [attr.data-icon]="item.icon" aria-hidden="true"></span>
+        <span class="sidebar__label">{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+
+  <div class="sidebar__glow" aria-hidden="true"></div>
+</div>

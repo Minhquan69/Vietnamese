@@ -1,0 +1,25 @@
+<section class="learn-hero">
+  <p class="learn-hero__eyebrow">Immersive track</p>
+  <h1>Choose your level</h1>
+  <p class="learn-hero__lead text-muted">
+    Browse courses by CEFR-style levels. Lessons include vocabulary, grammar, skills practice, and video —
+    all tracked to your profile.
+  </p>
+</section>
+
+@if (loading()) {
+  <p class="text-muted">Loading levels…</p>
+} @else if (error()) {
+  <p>{{ error() }}</p>
+} @else {
+  <div class="learn-level-grid">
+    @for (lv of levels(); track lv.levelId) {
+      <a class="learn-level-card vlp-hover-lift" [routerLink]="['/learn/level', lv.levelId]">
+        <span class="learn-level-card__badge">{{ lv.levelName }}</span>
+        <h2>{{ lv.levelName }}</h2>
+        <p class="text-muted">{{ lv.description }}</p>
+        <span class="learn-level-card__cta">View courses →</span>
+      </a>
+    }
+  </div>
+}

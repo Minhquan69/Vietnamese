@@ -1,42 +1,65 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AccountService } from '../../services/account.service';
-import { BaseService } from '../../services/base.service';
+import { AuthSessionService } from '../../../core/auth/auth-session.service';
+import { AuthPageComponent } from '../../../core/auth/auth-page.component';
+import { UiButtonComponent } from '../../../shared/ui/button/ui-button.component';
+import { UiInputComponent } from '../../../shared/ui/input/ui-input.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    AuthPageComponent,
+    UiButtonComponent,
+    UiInputComponent,
+  ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  email: string = '';
-  password: string = '';
+  private readonly fb = inject(FormBuilder);
+  private readonly auth = inject(AuthSessionService);
+  private readonly router = inject(Router);
 
-  constructor(
-    private api: AccountService,
-    private router: Router,
-    private baseService: BaseService,
-  ) {}
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
 
-  login() {
-    const data = {
-      email: this.email,
-      password: this.password,
-    };
+  readonly form = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(1)]],
+  });
 
-    this.api.login(data).subscribe({
-      next: (res: any) => {
-        localStorage.setItem('token', res.token);
-
-        this.router.navigate(['/home']).then(() => {
+  submit(): void {
+    this.error.set(null);
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const { email, password } = this.form.getRawValue();
+    this.loading.set(true);
+    this.auth.login(email, password).subscribe({
+      next: () => {
+        this.loading.set(false);
+        void this.router.navigateByUrl('/dashboard').then(() => {
           window.location.reload();
         });
       },
-      error: (err) => {
-        this.baseService.handleError(err, 'Login failed');
+      error: (err: { error?: { message?: string } }) => {
+        this.loading.set(false);
+        const msg =
+          err?.error?.message ||
+          (typeof err?.error === 'string' ? err.error : null) ||
+          'Login failed';
+        this.error.set(msg);
       },
     });
   }

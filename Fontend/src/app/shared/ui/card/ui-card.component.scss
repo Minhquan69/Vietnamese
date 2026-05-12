@@ -1,0 +1,40 @@
+@use '../../../../styles/abstracts/mixins' as *;
+
+.ui-card {
+  border-radius: var(--radius-xl);
+  transition: transform var(--duration-normal) var(--ease-spring),
+    box-shadow var(--duration-normal) var(--ease-out-expo),
+    border-color var(--duration-normal) ease;
+}
+
+.ui-card--elevated {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+}
+
+.ui-card--glass {
+  @include glass-panel;
+  border-radius: var(--radius-2xl);
+}
+
+.ui-card--interactive {
+  cursor: pointer;
+}
+
+.ui-card--interactive:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+.ui-card--p-none {
+  padding: 0;
+}
+.ui-card--p-sm {
+  padding: var(--space-4);
+}
+.ui-card--p-md {
+  padding: var(--space-6);
+}
+.ui-card--p-lg {
+  padding: var(--space-8);
+}

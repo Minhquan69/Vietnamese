@@ -1,0 +1,94 @@
+<div class="acms">
+  <div class="acms__panel">
+    <h2 class="acms__title" style="font-size: 1.15rem; margin-bottom: var(--space-3)">Users</h2>
+
+    <div class="acms__filters">
+      <div class="acms__field" style="flex: 1; min-width: 200px">
+        <label class="acms__label" for="u-email">Email or name</label>
+        <input id="u-email" class="acms__input" [(ngModel)]="filterEmail" placeholder="Search…" />
+      </div>
+      <div class="acms__field">
+        <label class="acms__label" for="u-status">Status</label>
+        <select id="u-status" class="acms__select" [(ngModel)]="filterStatus">
+          <option value="">All</option>
+          <option value="1">Active (1)</option>
+          <option value="0">Inactive (0)</option>
+        </select>
+      </div>
+      <div class="acms__field">
+        <label class="acms__label" for="u-role">Role id</label>
+        <input
+          id="u-role"
+          type="number"
+          class="acms__input"
+          [(ngModel)]="filterRoleId"
+          placeholder="Optional"
+        />
+      </div>
+      <div class="acms__field">
+        <label class="acms__label" for="u-ps">Page size</label>
+        <select id="u-ps" class="acms__select" [(ngModel)]="pageSize" (ngModelChange)="apply()">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="20">20</option>
+          <option [ngValue]="50">50</option>
+        </select>
+      </div>
+      <button type="button" class="acms__btn" (click)="apply()" [disabled]="loading()">Apply</button>
+    </div>
+
+    @if (loading()) {
+      <p class="acms__loading">Loading…</p>
+    } @else if (error()) {
+      <p class="acms__error">{{ error() }}</p>
+    } @else {
+      @if (result(); as res) {
+      <div class="acms__table-wrap">
+        <table class="acms__table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of res.items; track row.userId) {
+              <tr>
+                <td>{{ row.userId }}</td>
+                <td>{{ row.name }}</td>
+                <td>{{ row.email }}</td>
+                <td><span class="acms__muted">{{ row.roleName }}</span> ({{ row.roleId }})</td>
+                <td>{{ row.status }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="acms__pager">
+        <span>Page {{ res.page }} of {{ res.totalPages || 1 }} · {{ res.totalCount }} rows</span>
+        <div class="acms__pager-actions">
+          <button
+            type="button"
+            class="acms__btn acms__btn--ghost"
+            (click)="goPage(res.page - 1)"
+            [disabled]="res.page <= 1 || loading()"
+          >
+            Previous
+          </button>
+          <button
+            type="button"
+            class="acms__btn acms__btn--ghost"
+            (click)="goPage(res.page + 1)"
+            [disabled]="res.page >= res.totalPages || loading()"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    }
+    }
+  </div>
+</div>

@@ -1,0 +1,183 @@
+<div class="speaking">
+  <div class="speaking__bg" aria-hidden="true"></div>
+
+  <header class="speaking__head">
+    <div>
+      <p class="speaking__eyebrow">Speaking lab</p>
+      <h1 class="speaking__title">AI speaking coach</h1>
+      <p class="speaking__lead">
+        Ghi âm tiếng Việt, nhận bản ghi tự động, điểm phát âm – độ trôi chảy – thanh điệu và gợi ý cải thiện.
+      </p>
+    </div>
+    <div class="speaking__head-actions">
+      <a routerLink="/ai-tutor" class="speaking__ghost">Mở AI tutor</a>
+    </div>
+  </header>
+
+  <section class="speaking__panel">
+    <label class="speaking__label" for="refText">Câu mẫu (tuỳ chọn)</label>
+    <textarea
+      id="refText"
+      class="speaking__textarea"
+      rows="2"
+      placeholder="Ví dụ: Xin chào, hôm nay tôi học tiếng Việt."
+      [ngModel]="referenceText()"
+      (ngModelChange)="referenceText.set($event)"
+      [disabled]="isRecording() || evaluating()"
+    ></textarea>
+
+    <div class="speaking__wave-wrap">
+      <canvas #waveCanvas class="speaking__canvas" width="720" height="160"></canvas>
+      @if (!isRecording() && !evaluating()) {
+        <span class="speaking__wave-hint">Sóng âm hiển thị khi đang ghi</span>
+      }
+    </div>
+
+    <div class="speaking__controls">
+      @if (!isRecording()) {
+        <button
+          type="button"
+          class="speaking__rec"
+          [disabled]="evaluating()"
+          (click)="startRecording()"
+        >
+          <span class="speaking__rec-dot" aria-hidden="true"></span>
+          Bắt đầu ghi
+        </button>
+      } @else {
+        <button type="button" class="speaking__rec speaking__rec--on" (click)="stopRecordingAndEvaluate()">
+          <span class="speaking__rec-dot speaking__rec-dot--pulse" aria-hidden="true"></span>
+          Dừng &amp; chấm điểm
+        </button>
+      }
+      @if (evaluating()) {
+        <span class="speaking__status">Đang phân tích…</span>
+      }
+    </div>
+
+    @if (error()) {
+      <p class="speaking__error" role="alert">{{ error() }}</p>
+    }
+  </section>
+
+  @if (lastResult(); as r) {
+    <section class="speaking__panel" aria-live="polite">
+      <h2 class="speaking__h2">Kết quả lần ghi gần nhất</h2>
+      <div class="speaking__scores">
+        <article class="speaking__card">
+          <h3>Tổng thể</h3>
+          <p class="speaking__score">{{ r.overallScore | number: '1.0-1' }}</p>
+        </article>
+        <article class="speaking__card">
+          <h3>Phát âm</h3>
+          <p class="speaking__score">{{ r.pronunciationScore | number: '1.0-1' }}</p>
+        </article>
+        <article class="speaking__card">
+          <h3>Độ trôi chảy</h3>
+          <p class="speaking__score">{{ r.fluencyScore | number: '1.0-1' }}</p>
+        </article>
+        <article class="speaking__card">
+          <h3>Thanh điệu</h3>
+          <p class="speaking__score">{{ r.toneScore | number: '1.0-1' }}</p>
+        </article>
+      </div>
+      <p class="speaking__meta">
+        Thời lượng ~ {{ (r.durationMs / 1000) | number: '1.1-1' }}s
+        @if (r.audioUrl) {
+          ·
+          <a
+            class="speaking__link"
+            [href]="audioPlaybackUrl(r.audioUrl)"
+            target="_blank"
+            rel="noopener"
+            >Nghe lại bản ghi</a>
+        }
+      </p>
+      <div class="speaking__block">
+        <h3 class="speaking__h3">Bản ghi chữ</h3>
+        <p class="speaking__transcript">{{ r.transcript }}</p>
+      </div>
+      @if (r.feedback) {
+        <div class="speaking__block">
+          <h3 class="speaking__h3">Nhận xét</h3>
+          <p class="speaking__feedback">{{ r.feedback }}</p>
+        </div>
+      }
+      @if (r.tips.length) {
+        <div class="speaking__block">
+          <h3 class="speaking__h3">Gợi ý</h3>
+          <ul class="speaking__tips">
+            @for (t of r.tips; track t) {
+              <li>{{ t }}</li>
+            }
+          </ul>
+        </div>
+      }
+    </section>
+  }
+
+  <section class="speaking__panel">
+    <div class="speaking__analytics-head">
+      <h2 class="speaking__h2">Phân tích &amp; lịch sử</h2>
+      @if (analyticsLoading()) {
+        <span class="speaking__muted">Đang tải…</span>
+      }
+    </div>
+    @if (analytics(); as a) {
+      <div class="speaking__stats">
+        <div class="speaking__stat">
+          <span class="speaking__stat-label">Số lần</span>
+          <span class="speaking__stat-value">{{ a.attemptCount }}</span>
+        </div>
+        <div class="speaking__stat">
+          <span class="speaking__stat-label">TB tổng</span>
+          <span class="speaking__stat-value">{{ a.averageOverall | number: '1.0-1' }}</span>
+        </div>
+        <div class="speaking__stat">
+          <span class="speaking__stat-label">TB phát âm</span>
+          <span class="speaking__stat-value">{{ a.averagePronunciation | number: '1.0-1' }}</span>
+        </div>
+        <div class="speaking__stat">
+          <span class="speaking__stat-label">TB trôi chảy</span>
+          <span class="speaking__stat-value">{{ a.averageFluency | number: '1.0-1' }}</span>
+        </div>
+        <div class="speaking__stat">
+          <span class="speaking__stat-label">TB thanh</span>
+          <span class="speaking__stat-value">{{ a.averageTone | number: '1.0-1' }}</span>
+        </div>
+      </div>
+    } @else if (!analyticsLoading()) {
+      <p class="speaking__muted">Chưa có dữ liệu. Hãy ghi âm lần đầu.</p>
+    }
+
+    @if (historyRows().length) {
+      <div class="speaking__table-wrap">
+        <table class="speaking__table">
+          <thead>
+            <tr>
+              <th>Thời điểm</th>
+              <th>Điểm</th>
+              <th>Giây</th>
+              <th>Mẫu / bản xem trước</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of historyRows(); track row.attemptId) {
+              <tr>
+                <td>{{ row.createdUtc | date: 'short' }}</td>
+                <td>{{ row.overallScore | number: '1.0-1' }}</td>
+                <td>{{ (row.durationMs / 1000) | number: '1.1-1' }}</td>
+                <td class="speaking__cell-preview">
+                  @if (row.referenceText) {
+                    <span class="speaking__ref">{{ row.referenceText }}</span>
+                  }
+                  <span class="speaking__preview">{{ row.transcriptPreview }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</div>

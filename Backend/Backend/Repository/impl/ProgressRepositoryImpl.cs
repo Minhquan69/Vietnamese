@@ -1,4 +1,5 @@
-﻿using Backend.Data;
+﻿using Backend.common;
+using Backend.Data;
 using Backend.Models;
 using Backend.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -219,6 +220,62 @@ namespace Backend.Repository.impl
                 EntityState.Modified;
 
             await Task.CompletedTask;
+        }
+
+        public async Task<Dictionary<int, UserProgress>> GetUserLessonProgressAsync(
+            int userId,
+            List<int> lessonIds)
+        {
+            if (lessonIds == null || lessonIds.Count == 0)
+            {
+                return new Dictionary<int, UserProgress>();
+            }
+
+            var distinct = lessonIds.Distinct().ToList();
+            var rows = await _context.UserProgress
+                .AsNoTracking()
+                .Where(x =>
+                    x.UserId == userId
+                    && x.RefType == Constant.RefType.Lesson
+                    && distinct.Contains(x.RefId))
+                .ToListAsync();
+
+            return rows.ToDictionary(x => x.RefId, x => x);
+        }
+
+        public async Task<bool> CompleteLessonProgressAsync(int userId, int lessonId)
+        {
+            var newlyCompleted = false;
+            var row = await _context.UserProgress
+                .FirstOrDefaultAsync(x =>
+                    x.UserId == userId
+                    && x.RefType == Constant.RefType.Lesson
+                    && x.RefId == lessonId);
+
+            var now = DateTime.UtcNow;
+            if (row == null)
+            {
+                newlyCompleted = true;
+                await _context.UserProgress.AddAsync(
+                    new UserProgress
+                    {
+                        UserId = userId,
+                        RefType = Constant.RefType.Lesson,
+                        RefId = lessonId,
+                        Status = true,
+                        AssignedDate = now,
+                        CompletedDate = now,
+                    });
+            }
+            else if (!row.Status)
+            {
+                newlyCompleted = true;
+                row.Status = true;
+                row.CompletedDate = now;
+            }
+
+            await _context.SaveChangesAsync();
+            return newlyCompleted;
         }
     }
 }

@@ -11,6 +11,9 @@ namespace Backend.Models
         public string Sentence { get; set; } = string.Empty;
         public double StartTime { get; set; }
 
+        /// <summary>Seconds; if null, derived from next cue or default gap.</summary>
+        public double? EndTime { get; set; }
+
         public Video? Video { get; set; }
     }
 }

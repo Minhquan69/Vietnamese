@@ -1,0 +1,67 @@
+@if (loading()) {
+  <p class="text-muted">Loading course…</p>
+} @else if (error()) {
+  <p>{{ error() }}</p>
+  <p class="text-muted"><a routerLink="/login">Sign in</a> to track lessons.</p>
+} @else {
+  @if (detail(); as d) {
+  <div class="course-detail-head">
+    <div class="course-detail-breadcrumb">
+      <a routerLink="/learn">Levels</a>
+      <span aria-hidden="true">/</span>
+      <a [routerLink]="['/learn/level', d.levelId]">{{ d.levelName }}</a>
+    </div>
+    <h1>{{ d.courseName }}</h1>
+    @if (d.description) {
+      <p class="course-detail-desc text-muted">{{ d.description }}</p>
+    }
+    <div class="course-detail-stats">
+      <div class="course-detail-stat">
+        <span class="course-detail-stat__label">Course progress</span>
+        <span class="course-detail-stat__value">{{ d.progressPercent }}%</span>
+      </div>
+      <div class="course-detail-stat">
+        <span class="course-detail-stat__label">Lessons</span>
+        <span class="course-detail-stat__value">{{ d.lessonsCompleted }}/{{ d.lessonTotal }}</span>
+      </div>
+    </div>
+    @if (continueLink(); as cl) {
+      <ui-button variant="primary" [routerLink]="cl">Continue learning</ui-button>
+    }
+  </div>
+
+  <h2 class="course-detail-units-title">Units</h2>
+  <div class="unit-row-grid">
+    @for (u of d.units; track u.unitId) {
+      <div class="unit-row" [class.unit-row--locked]="!u.unitUnlocked">
+        <div class="unit-row__main">
+          <span class="unit-row__idx">{{ u.orderIndex + 1 }}</span>
+          <div>
+            <h3>{{ u.unitName }}</h3>
+            @if (u.objective) {
+              <p class="text-muted unit-row__obj">{{ u.objective }}</p>
+            }
+          </div>
+        </div>
+        <div class="unit-row__meter-wrap">
+          <div class="unit-row__meter">
+            <div class="unit-row__meter-fill" [style.width.%]="u.progressPercent"></div>
+          </div>
+          <span class="unit-row__pct">{{ u.progressPercent }}%</span>
+        </div>
+        @if (u.unitUnlocked) {
+          <ui-button
+            variant="secondary"
+            size="sm"
+            [routerLink]="['/learn/course', d.courseId, 'unit', u.unitId]"
+          >
+            Open
+          </ui-button>
+        } @else {
+          <span class="text-muted unit-row__lock">Locked</span>
+        }
+      </div>
+    }
+  </div>
+  }
+}

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Backend.Common;
+using Backend.Common;
 using Backend.dto;
 using Backend.Mapper;
 using Backend.Models;
@@ -118,7 +119,14 @@ namespace Backend.Services.impl
         {
             var transcripts = await _videoRepository.Search(keyword,page,pageSize);
 
-            return _mapper.Map<List<Transcript>, List<TranscriptDTO>>(transcripts);
+            var result = new List<TranscriptDTO>();
+            foreach (var t in transcripts)
+            {
+                var yid = t.Video?.YoutubeId ?? "";
+                result.AddRange(TranscriptCueMapper.MapCues(yid, new[] { t }));
+            }
+
+            return result;
         }
         /*
          * cập nhật trạng thái video

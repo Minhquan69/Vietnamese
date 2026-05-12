@@ -15,5 +15,6 @@ namespace Backend.Repository
         Task<List<UserDTO>> GetUsers(string? email, int? status, int? roleId, int page, int pageSize);
         Task<int> CountUsers(string? email, int? status, int? roleId);
         Task<dynamic?> GetUserWithRole(string email);
+        Task<User?> GetUserByEmailNormalized(string email);
     }
 }

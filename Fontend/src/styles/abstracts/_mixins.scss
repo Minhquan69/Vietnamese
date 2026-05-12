@@ -1,0 +1,18 @@
+@mixin focus-ring {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+@mixin glass-panel {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: var(--shadow-glass);
+}
+
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

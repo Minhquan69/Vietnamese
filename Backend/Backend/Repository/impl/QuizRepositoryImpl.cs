@@ -64,7 +64,7 @@ namespace Backend.Repository.impl
 
             var answerIds = await _context.Answers.Where(x => questionIds.Contains(x.QuestionId)).Select(x => x.AnswerId).ToListAsync();
 
-            await _context.UserAnswer.Where(x => answerIds.Contains(x.AnswerId)).ExecuteDeleteAsync();
+            await _context.UserAnswer.Where(x => x.AnswerId != null && answerIds.Contains(x.AnswerId.Value)).ExecuteDeleteAsync();
             await _context.Answers.Where(x => answerIds.Contains(x.AnswerId)).ExecuteDeleteAsync();
             await _context.Questions.Where(x => questionIds.Contains(x.QuestionId)).ExecuteDeleteAsync();
             await _context.Passages.Where(x => passageIds.Contains(x.PassageId)).ExecuteDeleteAsync();
@@ -90,6 +90,13 @@ namespace Backend.Repository.impl
                     .ThenInclude(x => x.Passages)
                         .ThenInclude(x => x.Questions)
                             .ThenInclude(x => x.Answers)
+                .FirstOrDefaultAsync(x => x.QuizId == quizId);
+        }
+
+        public async Task<Quiz?> GetQuizSummary(int quizId)
+        {
+            return await _context.Quizzes
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.QuizId == quizId);
         }
 

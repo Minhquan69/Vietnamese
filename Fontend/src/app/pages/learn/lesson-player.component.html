@@ -1,0 +1,116 @@
+@if (loading()) {
+  <p class="text-muted">Loading lesson…</p>
+} @else if (error()) {
+  <p>{{ error() }}</p>
+} @else {
+  @if (lesson(); as L) {
+  <article class="lesson">
+    <header class="lesson__head">
+      <p class="lesson__type">{{ typeLabel(L.lessonType) }}</p>
+      <h1 class="lesson__title">{{ L.title }}</h1>
+      @if (L.summary) {
+        <p class="lesson__summary text-muted">{{ L.summary }}</p>
+      }
+      <p class="lesson__meta text-muted">
+        {{ L.unitName }} · ~{{ L.durationMinutes }} min
+        @if (L.completed) {
+          <span class="lesson__done-pill">Completed</span>
+        }
+      </p>
+    </header>
+
+    @switch (L.lessonType.toLowerCase()) {
+      @case ('video') {
+        <section class="lesson__panel lesson__panel--video">
+          @if (youtubeId(); as yid) {
+            <app-video-learning-session [youtubeId]="yid" [title]="L.title" />
+          } @else {
+            @if (videoEmbedUrl(); as safe) {
+              <div class="lesson__video-frame">
+                <iframe [src]="safe" title="Lesson video" allowfullscreen></iframe>
+              </div>
+            } @else {
+              <p class="text-muted">No video URL on this unit yet.</p>
+            }
+          }
+        </section>
+      }
+      @case ('listening') {
+        <section class="lesson__panel">
+          <p>
+            Focus on sounds and tones. Replay your unit audio materials and repeat out loud — consistency beats
+            perfection.
+          </p>
+          @if (bullets().length) {
+            <ul class="lesson__bullets">
+              @for (b of bullets(); track b) {
+                <li>{{ b }}</li>
+              }
+            </ul>
+          }
+        </section>
+      }
+      @case ('speaking') {
+        <section class="lesson__panel">
+          <p>
+            Practice pronunciation with short phrases. Use the unit quiz for structured speaking where available.
+          </p>
+          @if (L.quizUnitId) {
+            <ui-button
+              variant="secondary"
+              [routerLink]="['/user/quiz']"
+              [queryParams]="{ unitId: L.quizUnitId, refType: 'UNIT', refId: L.quizUnitId }"
+            >
+              Open unit quiz
+            </ui-button>
+          }
+        </section>
+      }
+      @case ('reading') {
+        <section class="lesson__panel">
+          <p>
+            Read the objective and description for this unit slowly. Highlight unknown characters and note tone pairs.
+          </p>
+          @if (bullets().length) {
+            <ul class="lesson__bullets">
+              @for (b of bullets(); track b) {
+                <li>{{ b }}</li>
+              }
+            </ul>
+          }
+        </section>
+      }
+      @default {
+        <section class="lesson__panel">
+          @if (bullets().length) {
+            <ul class="lesson__bullets">
+              @for (b of bullets(); track b) {
+                <li>{{ b }}</li>
+              }
+            </ul>
+          } @else {
+            <p>
+              Work through this {{ typeLabel(L.lessonType) }} section at your pace, then mark complete when you are
+              ready for the next lesson.
+            </p>
+          }
+        </section>
+      }
+    }
+
+    <footer class="lesson__footer">
+      <div class="lesson__nav">
+        <ui-button variant="ghost" [disabled]="!L.previousLessonId" (click)="goLesson(L.previousLessonId)">
+          ← Previous
+        </ui-button>
+        <ui-button variant="ghost" [disabled]="!L.nextLessonId" (click)="goLesson(L.nextLessonId)">
+          Next →
+        </ui-button>
+      </div>
+      @if (!L.completed) {
+        <ui-button variant="primary" [loading]="completing()" (click)="complete()">Mark complete</ui-button>
+      }
+    </footer>
+  </article>
+  }
+}
