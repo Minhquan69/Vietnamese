@@ -122,6 +122,7 @@ builder.Services.AddScoped<QuizAttemptRepository, QuizAttemptRepositoryImpl>();
 builder.Services.AddScoped<InteractiveQuizService, InteractiveQuizServiceImpl>();
 builder.Services.AddScoped<VideoVocabularyRepository, VideoVocabularyRepositoryImpl>();
 builder.Services.AddScoped<VideoLearningService, VideoLearningServiceImpl>();
+builder.Services.AddScoped<TextToSpeechService, GttsTextToSpeechService>();
 
 builder.Services.Configure<SpeakingOptions>(
     builder.Configuration.GetSection(SpeakingOptions.SectionName));
